@@ -41,17 +41,17 @@ func ParseEpisode(contents []byte) engine.ParseResult {
 
 	jsonStr := matches[1]
 
-	var episode episodeAPI
-	err := ffjson.Unmarshal(jsonStr, &episode)
+	var episodeResult episodeAPI
+	err := ffjson.Unmarshal(jsonStr, &episodeResult)
 	if err != nil {
 		log.Printf("ffjson.Unmarshal: error "+"jsonStr %s: %v", jsonStr, err)
 		return result
 	}
-	if episode.Code != http.StatusOK {
+	if episodeResult.Code != http.StatusOK {
 		return result
 	}
 
-	data := episode.Data
+	data := episodeResult.Data
 	if len(data.EpisodeList) == 0 {
 		return result
 	}
@@ -67,8 +67,8 @@ func ParseEpisode(contents []byte) engine.ParseResult {
 		}
 	}
 
-	for _, m := range data.EpisodeList {
-		result.Items = append(result.Items, []interface{}{m})
+	for _, episode := range data.EpisodeList {
+		result.Items = append(result.Items, []interface{}{episode})
 	}
 
 	return result

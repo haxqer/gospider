@@ -1,6 +1,7 @@
 package engine
 
 import (
+	"github.com/pquerna/ffjson/ffjson"
 	"log"
 )
 
@@ -39,7 +40,8 @@ func (e *ConcurrentEngine) Run(seeds ...Request) {
 	for {
 		result := <-results
 		for _, item := range result.Items {
-			log.Printf("Got item #%d: %v", episodeCount, item)
+			v, _ := ffjson.Marshal(item)
+			log.Printf("Got item #%d: %s", episodeCount, v)
 			episodeCount++
 		}
 

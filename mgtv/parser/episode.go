@@ -17,12 +17,12 @@ type episodeAPI struct {
 }
 
 type episodeAPIData struct {
-	Info        *dramaInfo      `json:"info"`
-	Total       int             `json:"total"`
-	Count       int             `json:"count"`
-	TotalPage   int             `json:"total_page"`
-	CurrentPage int             `json:"current_page"`
-	EpisodeList []model.Episode `json:"list"`
+	Info        *dramaInfo    `json:"info"`
+	Total       int           `json:"total"`
+	Count       int           `json:"count"`
+	TotalPage   int           `json:"total_page"`
+	CurrentPage int           `json:"current_page"`
+	EpisodeList []mgtvEpisode `json:"list"`
 }
 
 type dramaInfo struct {
@@ -30,6 +30,26 @@ type dramaInfo struct {
 	Type  string `json:"type"`
 	IsVIP string `json:"isvip"`
 	Desc  string `json:"desc"`
+}
+
+type mgtvEpisode struct {
+	DramaID     string `json:"clip_id"`
+	EpisodeID   string `json:"video_id"`
+	Title1      string `json:"t1"`
+	Title2      string `json:"t2"`
+	Title3      string `json:"t3"`
+	Title4      string `json:"t4"`
+	URL         string `json:"url"`
+	Duration    string `json:"time"`
+	ContentType string `json:"contentType"`
+	Image       string `json:"img"`
+	IsIntact    string `json:"isIntact"`
+	IsNew       string `json:"isnew"`
+	IsVIP       string `json:"isvip"`
+	PlayCounter string `json:"playcnt"`
+	TS          string `json:"ts"`
+	NextID      string `json:"next_id"`
+	SrcClipID   string `json:"src_clip_id"`
 }
 
 func ParseEpisode(contents []byte, channelID string) engine.ParseResult {
@@ -69,9 +89,28 @@ func ParseEpisode(contents []byte, channelID string) engine.ParseResult {
 		}
 	}
 
-	for _, episode := range data.EpisodeList {
-		episode.URL = "https://www.mgtv.com/" + episode.URL
-		episode.ChannelID = channelID
+	for _, m := range data.EpisodeList {
+		episode := model.Episode{
+			ChannelID:   channelID,
+			DramaID:     m.DramaID,
+			DramaTitle:  data.Info.Title,
+			EpisodeID:   m.EpisodeID,
+			Title1:      m.Title1,
+			Title2:      m.Title2,
+			Title3:      m.Title3,
+			Title4:      m.Title4,
+			URL:         "https://www.mgtv.com/" + m.URL,
+			Duration:    m.Duration,
+			ContentType: m.ContentType,
+			Image:       m.Image,
+			IsIntact:    m.IsIntact,
+			IsNew:       m.IsNew,
+			IsVIP:       m.IsVIP,
+			PlayCounter: m.PlayCounter,
+			TS:          m.TS,
+			NextID:      m.NextID,
+			SrcClipID:   m.SrcClipID,
+		}
 		result.Items = append(result.Items, episode)
 	}
 

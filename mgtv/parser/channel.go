@@ -13,7 +13,6 @@ func ParseChannel(contents []byte, channelID string) engine.ParseResult {
 
 	matches := channelRe.FindAllSubmatch(contents, -1)
 	for _, m := range matches {
-		result.Items = append(result.Items, "drama "+string(m[2]))
 		matchesEpisode := episodeRe.FindSubmatch(m[1])
 		episodeID := string(matchesEpisode[1])
 

@@ -1,7 +1,6 @@
 package engine
 
 import (
-	"git.trac.cn/nv/spider/model"
 	"log"
 )
 
@@ -40,10 +39,8 @@ func (e *ConcurrentEngine) Run(seeds ...Request) {
 	for {
 		result := <-results
 		for _, item := range result.Items {
-			if _, ok := item.(model.Episode); ok {
-				log.Printf("Got item #%d: %v", episodeCount, item)
-				episodeCount++
-			}
+			log.Printf("Got item #%d: %v", episodeCount, item)
+			episodeCount++
 		}
 
 		for _, request := range result.Requests {

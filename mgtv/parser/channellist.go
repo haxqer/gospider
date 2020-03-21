@@ -13,7 +13,6 @@ func ParseChannelList(contents []byte) engine.ParseResult {
 
 	matches := channelListRe.FindAllSubmatch(contents, -1)
 	for _, m := range matches {
-		result.Items = append(result.Items, "Channel ")
 		channelID := string(m[2])
 		result.Requests = append(result.Requests, engine.Request{
 			Url: "https://list.mgtv.com" + string(m[1]) + channelID,

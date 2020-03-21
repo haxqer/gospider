@@ -99,7 +99,7 @@ func ParseEpisode(contents []byte, channelID string) engine.ParseResult {
 			Title2:      m.Title2,
 			Title3:      m.Title3,
 			Title4:      m.Title4,
-			URL:         "https://www.mgtv.com/" + m.URL,
+			URL:         "https://www.mgtv.com" + m.URL,
 			Duration:    m.Duration,
 			ContentType: m.ContentType,
 			Image:       m.Image,

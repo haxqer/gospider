@@ -1,13 +1,9 @@
 package engine
 
-import (
-	"github.com/pquerna/ffjson/ffjson"
-	"log"
-)
-
 type ConcurrentEngine struct {
 	Scheduler   Scheduler
 	WorkerCount int
+	ItemChan    chan interface{}
 }
 
 type Scheduler interface {
@@ -36,13 +32,10 @@ func (e *ConcurrentEngine) Run(seeds ...Request) {
 		e.Scheduler.Submit(r)
 	}
 
-	episodeCount := 0
 	for {
 		result := <-results
 		for _, item := range result.Items {
-			v, _ := ffjson.Marshal(item)
-			log.Printf("Got item #%d: %s", episodeCount, v)
-			episodeCount++
+			go func() { e.ItemChan <- item }()
 		}
 
 		for _, request := range result.Requests {

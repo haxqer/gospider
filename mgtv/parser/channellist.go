@@ -12,10 +12,10 @@ func ParseChannelList(contents []byte) engine.ParseResult {
 
 	result := engine.ParseResult{}
 	for _, m := range matches {
-		result.Items = append(result.Items, m[2])
+		result.Items = append(result.Items, "Channel "+string(m[2]))
 		result.Requests = append(result.Requests, engine.Request{
 			Url:        "https://list.mgtv.com" + string(m[1]),
-			ParserFunc: engine.NilParser,
+			ParserFunc: ParseChannel,
 		})
 
 	}

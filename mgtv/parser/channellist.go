@@ -5,27 +5,23 @@ import (
 	"regexp"
 )
 
-var channelListRe = regexp.MustCompile(`<li><a[^>]*href="(/-------------\.html\?channelId=\d+)">([^<]+)</a></li>`)
-
-//var nextChannelPageRe = regexp.MustCompile(`<li><a href="([^>]+\.html\?channelId=\d+)" class="next turn" title="下一页">`)
+//var channelListRe = regexp.MustCompile(`<li><a[^>]*href="(/-------------\.html\?channelId=\d+)">([^<]+)</a></li>`)
+var channelListRe = regexp.MustCompile(`<li><a[^>]*href="([^>]+\.html\?channelId=)(\d+)"`)
 
 func ParseChannelList(contents []byte) engine.ParseResult {
-	matches := channelListRe.FindAllSubmatch(contents, -1)
-
 	result := engine.ParseResult{}
-	for _, m := range matches {
-		result.Items = append(result.Items, "Channel "+string(m[2])+" page 1")
-		result.Requests = append(result.Requests, engine.Request{
-			Url:        "https://list.mgtv.com" + string(m[1]),
-			ParserFunc: ParseChannel,
-		})
 
+	matches := channelListRe.FindAllSubmatch(contents, -1)
+	for _, m := range matches {
+		result.Items = append(result.Items, "Channel ")
+		channelID := string(m[2])
+		result.Requests = append(result.Requests, engine.Request{
+			Url: "https://list.mgtv.com" + string(m[1]) + channelID,
+			ParserFunc: func(c []byte) engine.ParseResult {
+				return ParseChannel(c, channelID)
+			},
+		})
 	}
-	//
-	//nextChannelPageMatches := nextChannelPageRe.FindSubmatch(contents)
-	//if len(nextChannelPageMatches) > 2 {
-	//	result.Items = append(result.Items, "Channel "+string(m[2]))
-	//}
 
 	return result
 }

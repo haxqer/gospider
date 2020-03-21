@@ -1,6 +1,7 @@
 package engine
 
 import (
+	"git.trac.cn/nv/spider/model"
 	"log"
 )
 
@@ -29,21 +30,39 @@ func (e *ConcurrentEngine) Run(seeds ...Request) {
 	}
 
 	for _, r := range seeds {
+		if isDuplicate(r.Url) {
+			continue
+		}
 		e.Scheduler.Submit(r)
 	}
 
-	itemCount := 0
+	episodeCount := 0
 	for {
 		result := <-results
 		for _, item := range result.Items {
-			log.Printf("Got item #%d: %v", itemCount, item)
-			itemCount++
+			if _, ok := item.(model.Episode); ok {
+				log.Printf("Got item #%d: %v", episodeCount, item)
+				episodeCount++
+			}
 		}
 
 		for _, request := range result.Requests {
+			if isDuplicate(request.Url) {
+				continue
+			}
 			e.Scheduler.Submit(request)
 		}
 	}
+}
+
+var visitedUrls = make(map[string]bool)
+
+func isDuplicate(url string) bool {
+	if visitedUrls[url] {
+		return true
+	}
+	visitedUrls[url] = true
+	return false
 }
 
 func createWorker(requests chan Request, results chan ParseResult, ready ReadyNotifier) {

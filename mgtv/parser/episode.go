@@ -32,7 +32,7 @@ type dramaInfo struct {
 	Desc  string `json:"desc"`
 }
 
-func ParseEpisode(contents []byte) engine.ParseResult {
+func ParseEpisode(contents []byte, channelID string) engine.ParseResult {
 	result := engine.ParseResult{}
 	matches := episodeApiRe.FindSubmatch(contents)
 	if len(matches) < 2 {
@@ -61,14 +61,18 @@ func ParseEpisode(contents []byte) engine.ParseResult {
 	if data.TotalPage > data.CurrentPage {
 		for i := data.CurrentPage + 1; i <= data.TotalPage; i++ {
 			result.Requests = append(result.Requests, engine.Request{
-				Url:        GenEpisodeAPIURLByEpisodeID(tempEpisodeID, i),
-				ParserFunc: ParseEpisode,
+				Url: GenEpisodeAPIURLByEpisodeID(tempEpisodeID, i),
+				ParserFunc: func(c []byte) engine.ParseResult {
+					return ParseEpisode(c, channelID)
+				},
 			})
 		}
 	}
 
 	for _, episode := range data.EpisodeList {
-		result.Items = append(result.Items, []interface{}{episode})
+		episode.URL = "https://www.mgtv.com/" + episode.URL
+		episode.ChannelID = channelID
+		result.Items = append(result.Items, episode)
 	}
 
 	return result

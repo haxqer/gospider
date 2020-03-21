@@ -1,7 +1,6 @@
 package parser
 
 import (
-	"fmt"
 	"git.trac.cn/nv/spider/engine"
 	"io/ioutil"
 	"testing"
@@ -45,9 +44,9 @@ func TestParseChannel(t *testing.T) {
 					tt.itemSize, len(got.Items))
 			}
 
-			for _, m := range got.Requests {
-				fmt.Printf("%s", m.Url)
-			}
+			//for _, m := range got.Requests {
+			//	fmt.Printf("%s", m.Url)
+			//}
 			//if !reflect.DeepEqual(got, tt.want) {
 			//	t.Errorf("ParseChannel() = %v, want %v", got, tt.want)
 			//}

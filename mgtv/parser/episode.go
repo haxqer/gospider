@@ -52,7 +52,7 @@ type mgtvEpisode struct {
 	SrcClipID   string `json:"src_clip_id"`
 }
 
-func ParseEpisode(contents []byte, channelID string) engine.ParseResult {
+func ParseEpisode(contents []byte, url string, channelID string) engine.ParseResult {
 	result := engine.ParseResult{}
 	matches := episodeApiRe.FindSubmatch(contents)
 	if len(matches) < 2 {
@@ -83,7 +83,7 @@ func ParseEpisode(contents []byte, channelID string) engine.ParseResult {
 			result.Requests = append(result.Requests, engine.Request{
 				Url: GenEpisodeAPIURLByEpisodeID(tempEpisodeID, i),
 				ParserFunc: func(c []byte) engine.ParseResult {
-					return ParseEpisode(c, channelID)
+					return ParseEpisode(c, url, channelID)
 				},
 			})
 		}
@@ -99,7 +99,7 @@ func ParseEpisode(contents []byte, channelID string) engine.ParseResult {
 			Title2:      m.Title2,
 			Title3:      m.Title3,
 			Title4:      m.Title4,
-			URL:         "https://www.mgtv.com" + m.URL,
+			EpisodeURL:  "https://www.mgtv.com" + m.URL,
 			Duration:    m.Duration,
 			ContentType: m.ContentType,
 			Image:       m.Image,
@@ -111,8 +111,19 @@ func ParseEpisode(contents []byte, channelID string) engine.ParseResult {
 			NextID:      m.NextID,
 			SrcClipID:   m.SrcClipID,
 		}
-		result.Items = append(result.Items, episode)
+		item := engine.Item{
+			URL:     url,
+			ID:      episode.EpisodeID,
+			Payload: episode,
+		}
+		result.Items = append(result.Items, item)
 	}
 
 	return result
+}
+
+func EpisodeFunc(channelID string, url string) engine.ParserFunc {
+	return func(c []byte, url string) engine.ParseResult {
+		return ParseEpisode(c, url, channelID)
+	}
 }

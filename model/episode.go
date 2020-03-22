@@ -1,5 +1,7 @@
 package model
 
+import "encoding/json"
+
 type Episode struct {
 	ChannelID   string
 	DramaID     string
@@ -9,7 +11,7 @@ type Episode struct {
 	Title2      string
 	Title3      string
 	Title4      string
-	URL         string
+	EpisodeURL  string
 	Duration    string
 	ContentType string
 	Image       string
@@ -20,4 +22,14 @@ type Episode struct {
 	TS          string
 	NextID      string
 	SrcClipID   string
+}
+
+func FromJsonObj(o interface{}) (Episode, error) {
+	var episode Episode
+	s, err := json.Marshal(o)
+	if err != nil {
+		return episode, err
+	}
+	err = json.Unmarshal(s, &episode)
+	return episode, err
 }

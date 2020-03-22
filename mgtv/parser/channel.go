@@ -15,11 +15,11 @@ func ParseChannel(contents []byte, channelID string) engine.ParseResult {
 	for _, m := range matches {
 		matchesEpisode := episodeRe.FindSubmatch(m[1])
 		episodeID := string(matchesEpisode[1])
-
+		url := GenEpisodeAPIURLByEpisodeID(episodeID, 1)
 		result.Requests = append(result.Requests, engine.Request{
-			Url: GenEpisodeAPIURLByEpisodeID(episodeID, 1),
+			Url: url,
 			ParserFunc: func(c []byte) engine.ParseResult {
-				return ParseEpisode(c, channelID)
+				return ParseEpisode(c, url, channelID)
 			},
 		})
 	}

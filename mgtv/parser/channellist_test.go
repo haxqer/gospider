@@ -15,7 +15,7 @@ func TestParseChannelList(t *testing.T) {
 	if err != nil {
 		panic(err)
 	}
-	var parserFunc = ParseChannel
+	var parserFunc = ParseChannelList
 
 	var tests = []struct {
 		name        string

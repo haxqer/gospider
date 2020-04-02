@@ -1,6 +1,7 @@
 package persist
 
 import (
+	"fmt"
 	"git.trac.cn/nv/spider/engine"
 	"git.trac.cn/nv/spider/model"
 	"git.trac.cn/nv/spider/pkg/logging"
@@ -10,7 +11,7 @@ func ItemSaver() (chan engine.Item, error) {
 	out := make(chan engine.Item)
 	go func() {
 		itemCount := 0
-		var storedID = make(map[string]bool)
+		var storedID = make(map[int]bool)
 		for {
 			item := <-out
 
@@ -21,11 +22,11 @@ func ItemSaver() (chan engine.Item, error) {
 			itemCount++
 
 			if itemCount%10000 == 0 {
-				logging.Info("Item Saver: got item #%d: %v", itemCount, item)
+				logging.Info(fmt.Sprintf("Item Saver: got item #%d: %v", itemCount, item))
 			}
 			err := Save(&item)
 			if err != nil {
-				logging.Error("Item Saver: error saving item %v: %v", item, err)
+				logging.Error(fmt.Sprintf("Item Saver: error saving item %v: %v", item, err))
 			}
 		}
 	}()

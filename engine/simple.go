@@ -1,7 +1,9 @@
 package engine
 
 import (
+	"fmt"
 	"git.trac.cn/nv/spider/fetcher"
+	"git.trac.cn/nv/spider/pkg/logging"
 	"log"
 )
 
@@ -35,7 +37,7 @@ func worker(r Request) (ParseResult, error) {
 	//log.Printf("Fetching %s", r.Url)
 	body, err := fetcher.Fetch(r.Url)
 	if err != nil {
-		log.Printf("Fetcher: error: %v "+"fetching url %s", err, r.Url)
+		logging.Error(fmt.Sprintf("Fetcher: error: %v "+"fetching url %s", err, r.Url))
 		return ParseResult{}, err
 	}
 	return r.ParserFunc(body), nil

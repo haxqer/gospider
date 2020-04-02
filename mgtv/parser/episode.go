@@ -1,12 +1,16 @@
 package parser
 
 import (
+	"fmt"
 	"git.trac.cn/nv/spider/engine"
 	"git.trac.cn/nv/spider/model"
+	"git.trac.cn/nv/spider/pkg/logging"
 	"github.com/pquerna/ffjson/ffjson"
 	"log"
 	"net/http"
 	"regexp"
+	"strconv"
+	"strings"
 )
 
 var episodeApiRe = regexp.MustCompile(`^jQuery\d+_\d+\((.*)\)$`)
@@ -90,17 +94,43 @@ func ParseEpisode(contents []byte, url string, channelID string) engine.ParseRes
 	}
 
 	for _, m := range data.EpisodeList {
+
+		intChannelID, err := strconv.Atoi(strings.TrimSpace(channelID))
+		if err != nil {
+			logging.Error(fmt.Sprintf("channelID %s parse error: %+v", channelID, err))
+			continue
+		}
+
+		intDramaID, err := strconv.Atoi(strings.TrimSpace(m.DramaID))
+		if err != nil {
+			logging.Error(fmt.Sprintf("DramaID %s parse error: %+v", m.DramaID, err))
+			continue
+		}
+
+		intEpisodeID, err := strconv.Atoi(strings.TrimSpace(m.EpisodeID))
+		if err != nil {
+			logging.Error(fmt.Sprintf("EpisodeID %s parse error: %+v", m.EpisodeID, err))
+			continue
+		}
+
+		timeDuration, err := DurationUnmarshalText(m.Duration)
+		if err != nil {
+			logging.Error(fmt.Sprintf("Duration %s parse error: %+v", m.Duration, err))
+			continue
+		}
+		intDuration := int(timeDuration.Seconds())
+
 		item := model.Mgtv{
-			ChannelId:   channelID,
-			DramaId:     m.DramaID,
+			ChannelId:   intChannelID,
+			DramaId:     intDramaID,
 			DramaTitle:  data.Info.Title,
-			EpisodeId:   m.EpisodeID,
+			EpisodeId:   intEpisodeID,
 			Title1:      m.Title1,
 			Title2:      m.Title2,
 			Title3:      m.Title3,
 			Title4:      m.Title4,
-			EpisodeUrl:  "https://www.mgtv.com" + m.URL,
-			Duration:    m.Duration,
+			EpisodeUrl:  "http://www.mgtv.com" + m.URL,
+			Duration:    intDuration,
 			ContentType: m.ContentType,
 			Image:       m.Image,
 			IsIntact:    m.IsIntact,

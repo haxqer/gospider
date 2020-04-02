@@ -34,7 +34,7 @@ func TestParseChannel(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := ParseChannel(tt.args.contents)
+			got := ParseChannel(tt.args.contents, "1")
 			if len(got.Requests) != tt.requestSize {
 				t.Errorf("result should have %d "+"requests; but had %d",
 					tt.requestSize, len(got.Requests))

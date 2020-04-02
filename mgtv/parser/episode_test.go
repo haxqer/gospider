@@ -30,7 +30,7 @@ func TestParseEpisode(t *testing.T) {
 	}
 	for _, tt := range tests {
 		t.Run(tt.name, func(t *testing.T) {
-			got := ParseEpisode(tt.args.contents)
+			got := ParseEpisode(tt.args.contents, "", "")
 			//for _, m := range got.Requests {
 			//	fmt.Printf("%s", m.Url)
 			//}

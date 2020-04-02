@@ -9,9 +9,17 @@ import (
 	"time"
 )
 
-const pageSize = 50
+const constPageSize = 50
 
 func GenEpisodeAPIURLByEpisodeID(episodeID string, page int) string {
+	return genEpisodeAPIURLByEpisodeID(episodeID, page, constPageSize)
+}
+
+func GenEpisodeAPIURLByEpisodeIDNew(episodeID string, page int) string {
+	return genEpisodeAPIURLByEpisodeID(episodeID, page, 6)
+}
+
+func genEpisodeAPIURLByEpisodeID(episodeID string, page int, pageSize int) string {
 	jpRand := rand.Int63n(8030056088838044) + 1030056088838044
 	nowTS := time.Now().UnixNano() / int64(time.Millisecond)
 	jqTS := nowTS - rand.Int63n(400) + 100
@@ -20,6 +28,7 @@ func GenEpisodeAPIURLByEpisodeID(episodeID string, page int) string {
 		"&cxid=&version=5.5.35&callback=jQuery1820%d_%d&_support=10000000&_=%d",
 		episodeID, page, pageSize, jpRand, nowTS, jqTS)
 }
+
 
 func DurationUnmarshalText(s string) (time.Duration, error) {
 	var t time.Duration

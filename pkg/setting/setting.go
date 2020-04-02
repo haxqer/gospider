@@ -19,11 +19,11 @@ type App struct {
 var AppSetting = &App{}
 
 type Server struct {
-	RateLimit   time.Duration
-	WorkerCount int
-
+	RateLimit      time.Duration
+	WorkerCount    int
 	UrlExpire      time.Duration
 	SaveItemExpire time.Duration
+	IsFull         bool
 }
 
 var ServerSetting = &Server{}

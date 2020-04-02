@@ -5,6 +5,7 @@ import (
 	"git.trac.cn/nv/spider/engine"
 	"git.trac.cn/nv/spider/model"
 	"git.trac.cn/nv/spider/pkg/logging"
+	"git.trac.cn/nv/spider/pkg/setting"
 	"github.com/pquerna/ffjson/ffjson"
 	"log"
 	"net/http"
@@ -82,7 +83,7 @@ func ParseEpisode(contents []byte, url string, channelID string) engine.ParseRes
 
 	tempEpisodeID := data.EpisodeList[0].EpisodeID
 
-	if data.TotalPage > data.CurrentPage {
+	if data.TotalPage > data.CurrentPage && setting.ServerSetting.IsFull {
 		for i := data.CurrentPage + 1; i <= data.TotalPage; i++ {
 			result.Requests = append(result.Requests, engine.Request{
 				Url: GenEpisodeAPIURLByEpisodeID(tempEpisodeID, i),

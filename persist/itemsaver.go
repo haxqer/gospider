@@ -7,6 +7,7 @@ import (
 	"git.trac.cn/nv/spider/pkg/logging"
 	"git.trac.cn/nv/spider/pkg/setting"
 	"github.com/patrickmn/go-cache"
+	"strconv"
 	"time"
 )
 
@@ -18,10 +19,11 @@ func ItemSaver() (chan engine.Item, error) {
 		for {
 			item := <-out
 
-			if _, found := storedID.Get(string(item.EpisodeId)); found {
+			episodeStr := strconv.Itoa(item.EpisodeId)
+			if _, found := storedID.Get(episodeStr); found {
 				continue
 			}
-			storedID.SetDefault(string(item.EpisodeId), true)
+			storedID.SetDefault(episodeStr, true)
 
 			err := Save(&item)
 			if err != nil {

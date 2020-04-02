@@ -22,7 +22,7 @@ CREATE TABLE `spider_mgtv` (
   `is_intact` char(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '是否完整',
   `is_new` char(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '是否最新',
   `is_vip` char(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '是否vip',
-  `play_counter` varchar(255) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '播放数量',
+  `play_counter` bigint(22) DEFAULT '0' COMMENT '播放数量',
   `ts` timestamp NULL DEFAULT NULL COMMENT '视频上传时间',
   `next_id` char(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '下一集id',
   `src_clip_id` char(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '来源id',

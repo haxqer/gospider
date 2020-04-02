@@ -120,6 +120,12 @@ func ParseEpisode(contents []byte, url string, channelID string) engine.ParseRes
 		}
 		intDuration := int(timeDuration.Seconds())
 
+		int64PlayCounter, err := ParseMgtvPlayCounter(m.PlayCounter)
+		if err != nil {
+			logging.Error(fmt.Sprintf("PlayCounter %s parse error: %+v", m.PlayCounter, err))
+			continue
+		}
+
 		item := model.Mgtv{
 			ChannelId:   intChannelID,
 			DramaId:     intDramaID,
@@ -136,16 +142,11 @@ func ParseEpisode(contents []byte, url string, channelID string) engine.ParseRes
 			IsIntact:    m.IsIntact,
 			IsNew:       m.IsNew,
 			IsVip:       m.IsVIP,
-			PlayCounter: m.PlayCounter,
+			PlayCounter: int64PlayCounter,
 			Ts:          m.TS,
 			NextId:      m.NextID,
 			SrcClipId:   m.SrcClipID,
 		}
-		//item := engine.Item{
-		//	URL:     url,
-		//	ID:      episode.EpisodeId,
-		//	Payload: episode,
-		//}
 		result.Items = append(result.Items, item)
 	}
 

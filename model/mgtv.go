@@ -20,7 +20,7 @@ type Mgtv struct {
 	IsIntact    string `json:"is_intact"`
 	IsNew       string `json:"is_new"`
 	IsVip       string `json:"is_vip"`
-	PlayCounter string `json:"play_counter"`
+	PlayCounter int64  `json:"play_counter"`
 	Ts          string `json:"ts"`
 	NextId      string `json:"next_id"`
 	SrcClipId   string `json:"src_clip_id"`

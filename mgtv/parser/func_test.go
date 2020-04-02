@@ -92,3 +92,64 @@ func TestParseMgtvTime(t *testing.T) {
 	}
 
 }
+
+func TestParseMgtvPlayCounter(t *testing.T) {
+	type args struct {
+		s string
+	}
+	tests := []struct {
+		name    string
+		args    args
+		want    int64
+		wantErr bool
+	}{
+		{
+			name:    "testCase01",
+			args:    args{s: "1.9万"},
+			want:    19000,
+			wantErr: false,
+		},
+		{
+			name:    "testCase02",
+			args:    args{s: "1896"},
+			want:    1896,
+			wantErr: false,
+		},
+		{
+			name:    "testCase03",
+			args:    args{s: "6484.1万"},
+			want:    64841000,
+			wantErr: false,
+		},
+		{
+			name:    "testCase04",
+			args:    args{s: "4.1亿"},
+			want:    409999999,
+			wantErr: false,
+		},
+		{
+			name:    "testCase04",
+			args:    args{s: "4.1 亿"},
+			want:    409999999,
+			wantErr: false,
+		},
+		{
+			name:    "testCase04",
+			args:    args{s: "192.1 亿 "},
+			want:    19210000000,
+			wantErr: false,
+		},
+	}
+	for _, tt := range tests {
+		t.Run(tt.name, func(t *testing.T) {
+			got, err := ParseMgtvPlayCounter(tt.args.s)
+			if (err != nil) != tt.wantErr {
+				t.Errorf("ParseMgtvPlayCounter() error = %v, wantErr %v", err, tt.wantErr)
+				return
+			}
+			if got != tt.want {
+				t.Errorf("ParseMgtvPlayCounter() got = %v, want %v", got, tt.want)
+			}
+		})
+	}
+}

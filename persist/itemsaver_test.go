@@ -25,7 +25,7 @@ func TestSave(t *testing.T) {
 		IsIntact:    "1",
 		IsNew:       "0",
 		IsVip:       "0",
-		PlayCounter: "51.8万",
+		PlayCounter: 518000,
 		Ts:          "2020-03-04 18:40:50.0",
 		NextId:      "7616861",
 		SrcClipId:   "334346",

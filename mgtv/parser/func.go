@@ -3,6 +3,7 @@ package parser
 import (
 	"fmt"
 	"math/rand"
+	"regexp"
 	"strconv"
 	"strings"
 	"time"
@@ -59,4 +60,33 @@ func ParseMgtvTime(s string) (time.Time, error) {
 	}
 
 	return t, nil
+}
+
+var playCounterRe = regexp.MustCompile(`^([0-9.]+)(.*)$`)
+
+func ParseMgtvPlayCounter(s string) (int64, error) {
+	s = strings.TrimSpace(s)
+	if len(s) == 0 {
+		return 0, fmt.Errorf("parse playCounter error(is empty): %s", s)
+	}
+	m := playCounterRe.FindSubmatch([]byte(s))
+	if len(m) != 3 {
+		return 0, fmt.Errorf("parse playCounter error: %s", s)
+	}
+	number, err := strconv.ParseFloat(string(m[1]), 64)
+	if err != nil {
+		return 0, err
+	}
+
+	m2 := strings.TrimSpace(string(m[2]))
+	if m2 == "万" {
+		number = number * 10000
+	}
+
+	if m2 == "亿" {
+		number = number * 100000000
+	}
+	//
+
+	return int64(number), nil
 }

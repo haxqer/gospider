@@ -21,6 +21,9 @@ var AppSetting = &App{}
 type Server struct {
 	RateLimit   time.Duration
 	WorkerCount int
+
+	UrlExpire      time.Duration
+	SaveItemExpire time.Duration
 }
 
 var ServerSetting = &Server{}
@@ -52,6 +55,8 @@ func Setup() {
 	mapTo("database", DatabaseSetting)
 
 	ServerSetting.RateLimit = ServerSetting.RateLimit * time.Millisecond
+	ServerSetting.UrlExpire = ServerSetting.UrlExpire * time.Minute
+	ServerSetting.SaveItemExpire = ServerSetting.SaveItemExpire * time.Minute
 }
 
 func mapTo(section string, v interface{}) {

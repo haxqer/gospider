@@ -1,5 +1,12 @@
 package engine
 
+import (
+	hasher2 "git.trac.cn/nv/spider/pkg/hasher"
+	"git.trac.cn/nv/spider/pkg/setting"
+	"github.com/patrickmn/go-cache"
+	"time"
+)
+
 type ConcurrentEngine struct {
 	Scheduler   Scheduler
 	WorkerCount int
@@ -49,13 +56,18 @@ func (e *ConcurrentEngine) Run(seeds ...Request) {
 	}
 }
 
-var visitedUrls = make(map[string]bool)
+var visitedUrls *cache.Cache
+
+func Setup() {
+	visitedUrls = cache.New(setting.ServerSetting.UrlExpire, setting.ServerSetting.UrlExpire + 5*time.Minute)
+}
 
 func isDuplicate(url string) bool {
-	if visitedUrls[url] {
+	hasher := hasher2.GetMD5Hash(url)
+	if _, found := visitedUrls.Get(hasher); found {
 		return true
 	}
-	visitedUrls[url] = true
+	visitedUrls.SetDefault(hasher, true)
 	return false
 }
 

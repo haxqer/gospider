@@ -90,3 +90,4 @@ func ParseMgtvPlayCounter(s string) (int64, error) {
 
 	return int64(number), nil
 }
+

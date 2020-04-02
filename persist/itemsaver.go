@@ -5,28 +5,33 @@ import (
 	"git.trac.cn/nv/spider/engine"
 	"git.trac.cn/nv/spider/model"
 	"git.trac.cn/nv/spider/pkg/logging"
+	"git.trac.cn/nv/spider/pkg/setting"
+	"github.com/patrickmn/go-cache"
+	"time"
 )
 
 func ItemSaver() (chan engine.Item, error) {
 	out := make(chan engine.Item)
 	go func() {
 		itemCount := 0
-		var storedID = make(map[int]bool)
+		storedID := cache.New(setting.ServerSetting.SaveItemExpire, setting.ServerSetting.SaveItemExpire + 3*time.Minute)
 		for {
 			item := <-out
 
-			if storedID[item.EpisodeId] {
+			if _, found := storedID.Get(string(item.EpisodeId)); found {
 				continue
 			}
-			storedID[item.EpisodeId] = true
+			storedID.SetDefault(string(item.EpisodeId), true)
+
+			err := Save(&item)
+			if err != nil {
+				logging.Error(fmt.Sprintf("Item Saver: error saving item %v: %v", item, err))
+				continue
+			}
 			itemCount++
 
 			if itemCount%10000 == 0 {
 				logging.Info(fmt.Sprintf("Item Saver: got item #%d: %v", itemCount, item))
-			}
-			err := Save(&item)
-			if err != nil {
-				logging.Error(fmt.Sprintf("Item Saver: error saving item %v: %v", item, err))
 			}
 		}
 	}()

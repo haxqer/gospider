@@ -14,8 +14,9 @@ import (
 func init() {
 	setting.Setup()
 	logging.Setup()
-	fetcher.SetUp()
+	fetcher.Setup()
 	model.Setup()
+	engine.Setup()
 }
 
 func main() {
@@ -26,7 +27,7 @@ func main() {
 
 	e := engine.ConcurrentEngine{
 		Scheduler:   &scheduler.QueuedScheduler{},
-		WorkerCount: 10,
+		WorkerCount: setting.ServerSetting.WorkerCount,
 		ItemChan:    itemChan,
 	}
 	e.Run(engine.Request{

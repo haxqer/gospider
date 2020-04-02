@@ -16,7 +16,7 @@ import (
 
 var rateLimiter <-chan time.Time
 
-func SetUp() {
+func Setup() {
 	rateLimiter = time.Tick(setting.ServerSetting.RateLimit)
 }
 

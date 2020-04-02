@@ -3,6 +3,7 @@ package fetcher
 import (
 	"bufio"
 	"fmt"
+	"git.trac.cn/nv/spider/pkg/setting"
 	"golang.org/x/net/html/charset"
 	"golang.org/x/text/encoding"
 	"golang.org/x/text/encoding/unicode"
@@ -13,7 +14,11 @@ import (
 	"time"
 )
 
-var rateLimiter = time.Tick(100 * time.Millisecond)
+var rateLimiter <-chan time.Time
+
+func SetUp() {
+	rateLimiter = time.Tick(setting.ServerSetting.RateLimit)
+}
 
 func Fetch(url string) ([]byte, error) {
 	<-rateLimiter

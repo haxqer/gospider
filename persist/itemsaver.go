@@ -1,20 +1,12 @@
 package persist
 
 import (
-	"context"
-	"errors"
 	"git.trac.cn/nv/spider/engine"
-	"github.com/olivere/elastic/v7"
-	"log"
+	"git.trac.cn/nv/spider/model"
+	"git.trac.cn/nv/spider/pkg/logging"
 )
 
 func ItemSaver() (chan engine.Item, error) {
-	client, err := elastic.NewClient(
-		elastic.SetSniff(false))
-	if err != nil {
-		return nil, err
-	}
-
 	out := make(chan engine.Item)
 	go func() {
 		itemCount := 0
@@ -22,32 +14,44 @@ func ItemSaver() (chan engine.Item, error) {
 		for {
 			item := <-out
 
-			if storedID[item.ID] {
+			if storedID[item.EpisodeId] {
 				continue
 			}
-			storedID[item.ID] = true
-			log.Printf("Item Saver: got item #%d: %v", itemCount, item)
+			storedID[item.EpisodeId] = true
 			itemCount++
-			err := Save(client, item)
+
+			if itemCount%3000 == 0 {
+				logging.Info("Item Saver: got item #%d: %v", itemCount, item)
+			}
+			err := Save(&item)
 			if err != nil {
-				log.Printf("Item Saver: error saving item %v: %v", item, err)
+				logging.Error("Item Saver: error saving item %v: %v", item, err)
 			}
 		}
 	}()
 	return out, nil
 }
 
-func Save(client *elastic.Client, item engine.Item) error {
-	if item.ID == "" {
-		return errors.New("must supply ID")
-	}
-	_, err := client.Index().
-		Index("mgtv_episode").
-		Id(item.ID).
-		BodyJson(item).Do(context.Background())
+func Save(mgtv *model.Mgtv) error {
+	err := model.InsertOnDuplicate(mgtv)
 	if err != nil {
+		logging.Error(err)
 		return err
 	}
-
 	return nil
 }
+
+//func Save(client *elastic.Client, item engine.Item) error {
+//	if item.ID == "" {
+//		return errors.New("must supply ID")
+//	}
+//	_, err := client.Index().
+//		Index("mgtv_episode").
+//		Id(item.ID).
+//		BodyJson(item).Do(context.Background())
+//	if err != nil {
+//		return err
+//	}
+//
+//	return nil
+//}

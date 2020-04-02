@@ -1,5 +1,7 @@
 package engine
 
+import "git.trac.cn/nv/spider/model"
+
 type ParserFunc func(contents []byte, url string) ParseResult
 
 type Request struct {
@@ -12,8 +14,10 @@ type ParseResult struct {
 	Items    []Item
 }
 
-type Item struct {
-	URL     string
-	ID      string
-	Payload interface{}
-}
+//type Item struct {
+//	URL     string
+//	ID      string
+//	Payload interface{}
+//}
+
+type Item = model.Mgtv

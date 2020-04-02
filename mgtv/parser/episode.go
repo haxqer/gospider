@@ -90,32 +90,32 @@ func ParseEpisode(contents []byte, url string, channelID string) engine.ParseRes
 	}
 
 	for _, m := range data.EpisodeList {
-		episode := model.Episode{
-			ChannelID:   channelID,
-			DramaID:     m.DramaID,
+		item := model.Mgtv{
+			ChannelId:   channelID,
+			DramaId:     m.DramaID,
 			DramaTitle:  data.Info.Title,
-			EpisodeID:   m.EpisodeID,
+			EpisodeId:   m.EpisodeID,
 			Title1:      m.Title1,
 			Title2:      m.Title2,
 			Title3:      m.Title3,
 			Title4:      m.Title4,
-			EpisodeURL:  "https://www.mgtv.com" + m.URL,
+			EpisodeUrl:  "https://www.mgtv.com" + m.URL,
 			Duration:    m.Duration,
 			ContentType: m.ContentType,
 			Image:       m.Image,
 			IsIntact:    m.IsIntact,
 			IsNew:       m.IsNew,
-			IsVIP:       m.IsVIP,
+			IsVip:       m.IsVIP,
 			PlayCounter: m.PlayCounter,
-			TS:          m.TS,
-			NextID:      m.NextID,
-			SrcClipID:   m.SrcClipID,
+			Ts:          m.TS,
+			NextId:      m.NextID,
+			SrcClipId:   m.SrcClipID,
 		}
-		item := engine.Item{
-			URL:     url,
-			ID:      episode.EpisodeID,
-			Payload: episode,
-		}
+		//item := engine.Item{
+		//	URL:     url,
+		//	ID:      episode.EpisodeId,
+		//	Payload: episode,
+		//}
 		result.Items = append(result.Items, item)
 	}
 

@@ -30,7 +30,7 @@ func main() {
 		ItemChan:    itemChan,
 	}
 	e.Run(engine.Request{
-		Url:        "https://list.mgtv.com/-------------.html?channelId=1",
+		Url:        "http://list.mgtv.com/-------------.html?channelId=1",
 		ParserFunc: parser.ParseChannelList,
 	})
 

@@ -20,7 +20,7 @@ func ItemSaver() (chan engine.Item, error) {
 			storedID[item.EpisodeId] = true
 			itemCount++
 
-			if itemCount%3000 == 0 {
+			if itemCount%10000 == 0 {
 				logging.Info("Item Saver: got item #%d: %v", itemCount, item)
 			}
 			err := Save(&item)

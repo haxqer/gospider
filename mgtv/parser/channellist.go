@@ -20,6 +20,13 @@ func ParseChannelList(contents []byte) engine.ParseResult {
 				return ParseChannel(c, channelID)
 			},
 		})
+
+		result.Requests = append(result.Requests, engine.Request{
+			Url: "http://list.mgtv.com" + string(m[1]) + channelID,
+			ParserFunc: func(c []byte) engine.ParseResult {
+				return ParseChannelList(c)
+			},
+		})
 	}
 
 	return result

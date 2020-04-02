@@ -32,12 +32,8 @@ func (e *ConcurrentEngine) Run(seeds ...Request) {
 		createWorker(e.Scheduler.WorkerChan(), results, e.Scheduler)
 	}
 
-	for _, r := range seeds {
-		if isDuplicate(r.Url) {
-			continue
-		}
-		e.Scheduler.Submit(r)
-	}
+	tickTrigger(e, seeds)
+	trigger(e, seeds)
 
 	for {
 		result := <-results
@@ -56,9 +52,29 @@ func (e *ConcurrentEngine) Run(seeds ...Request) {
 	}
 }
 
+var seedTrigger <-chan time.Time
+func tickTrigger(e *ConcurrentEngine, seeds []Request)  {
+	go func() {
+		for {
+			<-seedTrigger
+			trigger(e, seeds)
+		}
+	}()
+}
+
+func trigger(e *ConcurrentEngine, seeds []Request)  {
+	for _, r := range seeds {
+		if isDuplicate(r.Url) {
+			continue
+		}
+		e.Scheduler.Submit(r)
+	}
+}
+
 var visitedUrls *cache.Cache
 
 func Setup() {
+	seedTrigger = time.Tick(1 * time.Minute)
 	visitedUrls = cache.New(setting.ServerSetting.UrlExpire, setting.ServerSetting.UrlExpire + 5*time.Minute)
 }
 

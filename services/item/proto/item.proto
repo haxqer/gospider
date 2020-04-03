@@ -1,0 +1,33 @@
+syntax = "proto3";
+
+package api.trac.cn.saveitem;
+
+message Item {
+    int32 episode_id = 1;
+    int32 channel_id = 2;
+    int32 drama_id = 3;
+    string drama_title = 4;
+    string title1 = 5;
+    string title2 = 6;
+    string title3 = 7;
+    string title4 = 8;
+    string episode_url = 9;
+    int32 duration = 10;
+    string content_type = 11;
+    string image = 12;
+    string is_intact = 13;
+    string is_new = 14;
+    string is_vip = 15;
+    int64 play_counter = 16;
+    string ts = 17;
+    string next_id = 18;
+    string src_clip_id = 19;
+}
+
+message SaveResponse {
+    int32 code = 1;
+}
+
+service Save {
+    rpc SaveItem (Item) returns (SaveResponse) {};
+}

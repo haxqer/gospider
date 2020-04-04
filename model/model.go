@@ -11,7 +11,7 @@ import (
 	"time"
 )
 
-var db *gorm.DB
+var PersistDB *gorm.DB
 
 type Model struct {
 	ID         int `gorm:"primary_key" json:"id"`
@@ -23,7 +23,7 @@ type Model struct {
 // Setup initializes the database instance
 func Setup() {
 	var err error
-	db, err = gorm.Open(setting.DatabaseSetting.Type, fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local",
+	PersistDB, err = gorm.Open(setting.DatabaseSetting.Type, fmt.Sprintf("%s:%s@tcp(%s)/%s?charset=utf8&parseTime=True&loc=Local",
 		setting.DatabaseSetting.User,
 		setting.DatabaseSetting.Password,
 		setting.DatabaseSetting.Host,
@@ -37,14 +37,14 @@ func Setup() {
 		return setting.DatabaseSetting.TablePrefix + defaultTableName
 	}
 
-	db.SingularTable(true)
-	db.DB().SetMaxIdleConns(setting.DatabaseSetting.MaxIdle)
-	db.DB().SetMaxOpenConns(setting.DatabaseSetting.MaxOpen)
+	PersistDB.SingularTable(true)
+	PersistDB.DB().SetMaxIdleConns(setting.DatabaseSetting.MaxIdle)
+	PersistDB.DB().SetMaxOpenConns(setting.DatabaseSetting.MaxOpen)
 }
 
 // CloseDB closes database connection (unnecessary)
 func CloseDB() {
-	defer db.Close()
+	defer PersistDB.Close()
 }
 
 // updateTimeStampForCreateCallback will set `CreatedOn`, `ModifiedOn` when creating

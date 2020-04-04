@@ -24,6 +24,7 @@ type Server struct {
 	UrlExpire      time.Duration
 	SaveItemExpire time.Duration
 	IsFull         bool
+	RegistryAddr   string
 }
 
 var ServerSetting = &Server{}

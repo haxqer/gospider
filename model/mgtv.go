@@ -5,16 +5,16 @@ import (
 )
 
 type Mgtv struct {
-	EpisodeId   int    `gorm:"primary_key" json:"episode_id"`
-	ChannelId   int    `json:"channel_id"`
-	DramaId     int    `json:"drama_id"`
+	EpisodeId   int32  `gorm:"primary_key" json:"episode_id"`
+	ChannelId   int32  `json:"channel_id"`
+	DramaId     int32  `json:"drama_id"`
 	DramaTitle  string `json:"drama_title"`
 	Title1      string `json:"title1"`
 	Title2      string `json:"title2"`
 	Title3      string `json:"title3"`
 	Title4      string `json:"title4"`
 	EpisodeUrl  string `json:"episode_url"`
-	Duration    int    `json:"duration"`
+	Duration    int32  `json:"duration"`
 	ContentType string `json:"content_type"`
 	Image       string `json:"image"`
 	IsIntact    string `json:"is_intact"`
@@ -37,7 +37,7 @@ func FromJsonObj(o interface{}) (Mgtv, error) {
 }
 
 func InsertOnDuplicate(mgtv *Mgtv) error {
-	err := db.Save(mgtv).Error
+	err := PersistDB.Save(mgtv).Error
 	if err != nil {
 		return err
 	}

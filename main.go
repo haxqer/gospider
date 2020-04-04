@@ -17,6 +17,7 @@ func init() {
 	fetcher.Setup()
 	model.Setup()
 	engine.Setup()
+	persist.Setup()
 }
 
 func main() {

@@ -4,7 +4,6 @@ import (
 	"git.trac.cn/nv/spider/engine"
 	"git.trac.cn/nv/spider/fetcher"
 	"git.trac.cn/nv/spider/mgtv/parser"
-	"git.trac.cn/nv/spider/model"
 	"git.trac.cn/nv/spider/persist"
 	"git.trac.cn/nv/spider/pkg/logging"
 	"git.trac.cn/nv/spider/pkg/setting"
@@ -15,7 +14,6 @@ func init() {
 	setting.Setup()
 	logging.Setup()
 	fetcher.Setup()
-	model.Setup()
 	engine.Setup()
 	persist.Setup()
 }

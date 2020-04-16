@@ -2,7 +2,6 @@ package main
 
 import (
 	"context"
-	"fmt"
 	"git.trac.cn/nv/spider/model"
 	"git.trac.cn/nv/spider/pkg/logging"
 	"git.trac.cn/nv/spider/pkg/setting"
@@ -53,7 +52,6 @@ func insertOrDuplicate(item *model.Mgtv) error {
 	if err != nil {
 		return err
 	}
-	fmt.Println(123)
 	return nil
 }
 

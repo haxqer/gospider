@@ -28,7 +28,11 @@ CREATE TABLE `spider_mgtv` (
   `src_clip_id` char(20) CHARACTER SET utf8mb4 COLLATE utf8mb4_general_ci DEFAULT NULL COMMENT '来源 id',
   `create_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP,
   `modify_time` timestamp NULL DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,
-  PRIMARY KEY (`episode_id`)
+  PRIMARY KEY (`episode_id`),
+  KEY `idx_mtime` (`modify_time`) USING BTREE,
+  KEY `idx_ts` (`ts`) USING BTREE,
+  KEY `idx_episode` (`episode_id`),
+  KEY `idx_drama` (`drama_id`)
 ) ENGINE=InnoDB DEFAULT CHARSET=utf8mb4 COLLATE=utf8mb4_general_ci COMMENT='芒果 TV 剧集';
 
 SET FOREIGN_KEY_CHECKS = 1;

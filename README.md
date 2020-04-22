@@ -12,7 +12,7 @@
 (引用包中适配 freebsd 时使用了一些 C 代码，CGo 和 跨平台编译不共存，暂时只能提供 linux 版本的二进制文件)
 
 ## 功能描述
-+ spider: 负责采集数据，从 etcd 获取 itemsave 服务列表，将采集的数据投递给 itemsave
++ spider: 负责采集数据，从 etcd 获取 itemsave 服务列表，将采集的数据投递给 itemsave (grpc)
 + itemsave: 注册服务至 etcd，接收 spider 投递的数据存入数据库中
 + basmicro: 工具包，etcd 可视化，查看 itemsave 服务状态
 + etcd: 注册中心
@@ -26,14 +26,14 @@
 ---
 ## 编译
 ### 爬虫编译
-+ dev: go build
-+ linux: env GOOS=linux go build
++ dev: `go build`
++ linux: `env GOOS=linux go build`
 
 生成二进制文件 `spider` 在工作目录
 
 ### ItemSave 编译
-+ dev: go build ./services/itemsave
-+ linux: env GOOS=linux go build ./services/itemsave
++ dev: `go build ./services/itemsave`
++ linux: `env GOOS=linux go build ./services/itemsave`
 
 生成二进制文件 `itemsave` 在工作目录
 

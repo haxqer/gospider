@@ -41,7 +41,7 @@
 ## 配置文件
 配置文件位置: `conf/app.ini`
 
-生成配置文件: `cp ./conf/app.dist.ini ./conf/app.init`
+生成配置文件: `cp ./conf/app.dist.ini ./conf/app.ini`
 
 ### 最小修改:
 

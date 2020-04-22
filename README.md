@@ -1,9 +1,15 @@
 # Go-Spider
+
 爬取 芒果TV 剧集
+
 ---
 每分钟自动注入一次 seed, 根据 seed 爬取相关网页数据(广度优先)。
 
 通过控制 url 去重时间(seed 也是 url), 控制采集频次。
+
+---
+基于 go-micro 微服务框架
+(引用包中适配 freebsd 时使用了一些 C 代码，CGo 和 跨平台编译不共存，暂时只能提供 linux 版本的二进制文件)
 
 ## 功能描述
 + spider: 负责采集数据，从 etcd 获取 itemsave 服务列表，将采集的数据投递给 itemsave

@@ -76,7 +76,7 @@ server
 
 参考: https://github.com/etcd-io/etcd/releases
 
-### basmicro
+### micro
 将 YOURIP 替换成 etcd 的 ip
 `micro --registry=etcd --registry_address=YOURIP:2379 web`
 

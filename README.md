@@ -114,7 +114,7 @@ itemsave
 - [ ] prometheus 监控
 - [ ] jaeger/zipkin 链路追踪
 - [ ] hystrix hystrix-dashboard 熔断器 熔断仪表盘
-- [ ] broker
+- [ ] rabbitmq broker 
 - [ ] 提供手工采集的接口
 - [ ] itemsave 接口 (grpc => api)
 - [ ] 限流: 提供手工采集、itemsave

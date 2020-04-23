@@ -107,4 +107,11 @@ itemsave
 ![itemsave](docs/images/itemsave.png)
 
  
+---
+## todo
+- [x] etcd 服务注册/发现
+- [ ] micro 健康检查
+- [ ] prometheus 监控
+- [ ] jaeger/zipkin 链路追踪
+- [ ] hystrix hystrix-dashboard 熔断器 熔断仪表盘
 

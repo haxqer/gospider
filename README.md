@@ -88,6 +88,7 @@ server
 ### spider
 修改配置文件的 `server`
 
-启动成功后，会向 `itemsave` 投递数据，每投递1万条，会写一次 log
+启动成功后，会向 `itemsave` 投递数据，每投递1万条，会写一次 log(log 无需保存)
+
 
 

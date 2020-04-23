@@ -15,8 +15,8 @@ do
     done
 done
 
-zip gspider-${strFDate}.zip  gspider_linux-amd64  conf/app.dist.ini README.md
-zip itemsave-${strFDate}.zip itemsave_linux-amd64 conf/app.dist.ini README.md
+zip -r gspider-${strFDate}.zip  gspider_linux-amd64  docs conf/app.dist.ini README.md
+zip -r itemsave-${strFDate}.zip itemsave_linux-amd64 docs conf/app.dist.ini README.md
 
 echo '----------------------------------------------'
 unzip -l gspider-${strFDate}.zip

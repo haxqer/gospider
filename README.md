@@ -15,7 +15,7 @@
 + spider: 负责采集数据，从 etcd 获取 itemsave 服务列表，将采集的数据投递给 itemsave (grpc)
 + itemsave: 注册服务至 etcd，接收 spider 投递的数据存入数据库(mysql)中
 + micro: 第三方工具包，etcd 可视化，查看 itemsave 服务状态 (https://github.com/micro/micro/releases 建议 v2.4.0)
-+ etcd: 注册中心 (github.com/etcd-io/etcd)
++ etcd: 注册中心 (github.com/etcd-io/etcd 建议 v3.4.x)
 
 
 数据库 schema 在 `docs/sql` 中

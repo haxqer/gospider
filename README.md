@@ -90,5 +90,13 @@ server
 
 启动成功后，会向 `itemsave` 投递数据，每投递1万条，会写一次 log(log 无需保存)
 
+---
+## 数据流向(用途描述)
+数据流向:
+1. spider 采集，投递给 itemsave
+2. itemsave 写入 mysql
+3. cpanel 上的脚本定时读取 mysql 数据生成索引 (用于定向剧集), 写入 redis
+4. dsp 读取 redis 中的剧集索引，指导广告投放
 
 
+ 

@@ -98,7 +98,7 @@ server
 3. cpanel 上的脚本定时读取 mysql 数据生成索引 (用于定向剧集), 写入 redis
 4. dsp 读取 redis 中的剧集索引，指导广告投放
 
---
+---
 ## micro web
 micro
 ![micro](docs/images/micro-services.png)

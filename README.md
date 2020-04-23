@@ -13,9 +13,9 @@
 
 ## 功能描述
 + spider: 负责采集数据，从 etcd 获取 itemsave 服务列表，将采集的数据投递给 itemsave (grpc)
-+ itemsave: 注册服务至 etcd，接收 spider 投递的数据存入数据库中
-+ basmicro: 工具包，etcd 可视化，查看 itemsave 服务状态
-+ etcd: 注册中心
++ itemsave: 注册服务至 etcd，接收 spider 投递的数据存入数据库(mysql)中
++ micro: 第三方工具包，etcd 可视化，查看 itemsave 服务状态 (https://github.com/micro/micro/releases 建议 v2.4.0)
++ etcd: 注册中心 (github.com/etcd-io/etcd)
 
 
 数据库 schema 在 `docs/sql` 中
@@ -68,46 +68,22 @@ server
 ---
 ## 部署
 1. 启动 `etcd`
-2. 启动 `basmicro` 可视化服务
+2. 启动 `micro` 可视化服务
 3. 启动 `itemsave` (可多台，支持水平扩展)
 4. 启动 `spider` (目前建议一台，支持水平扩展)
 
 ### etcd
 
-docker 启动方式
-```bash
-rm -rf /tmp/etcd-data.tmp && mkdir -p /tmp/etcd-data.tmp && \
-  docker pull haxqer/etcd:v3.4.5 || true && \
-  docker run \
-  -p 2379:2379 \
-  -p 2380:2380 \
-  --mount type=bind,source=/tmp/etcd-data.tmp,destination=/etcd-data \
-  --name etcd-v3.4.5 \
-  haxqer/etcd:v3.4.5 \
-  /usr/local/bin/etcd \
-  --name s1 \
-  --data-dir /etcd-data \
-  --listen-client-urls http://0.0.0.0:2379 \
-  --advertise-client-urls http://0.0.0.0:2379 \
-  --listen-peer-urls http://0.0.0.0:2380 \
-  --initial-advertise-peer-urls http://0.0.0.0:2380 \
-  --initial-cluster s1=http://0.0.0.0:2380 \
-  --initial-cluster-token tkn \
-  --initial-cluster-state new \
-  --log-level info \
-  --logger zap \
-  --log-outputs stderr
-
-```
+参考: https://github.com/etcd-io/etcd/releases
 
 ### basmicro
 将 YOURIP 替换成 etcd 的 ip
-`basmicro --registry=etcd --registry_address=YOURIP:2379 web`
+`micro --registry=etcd --registry_address=YOURIP:2379 web`
 
 ### itemsave
 修改配置文件的 `server`(只需配置注册中心地址即可) 和 `database`
 
-启动成功后，在 `basmicro` 提供的 web 界面中能看到此服务
+启动成功后，在 `micro` 提供的 web 界面中能看到此服务
 
 ### spider
 修改配置文件的 `server`

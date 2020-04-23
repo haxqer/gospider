@@ -1,26 +1,9 @@
-/*
- Navicat Premium Data Transfer
-
- Source Server         : 172.31.0.227
- Source Server Type    : MySQL
- Source Server Version : 80019
- Source Host           : 172.31.0.227:3306
- Source Schema         : spider
-
- Target Server Type    : MySQL
- Target Server Version : 80019
- File Encoding         : 65001
-
- Date: 22/04/2020 16:20:53
-*/
-
 SET NAMES utf8mb4;
 SET FOREIGN_KEY_CHECKS = 0;
 
 -- ----------------------------
 -- Table structure for spider_mgtv
 -- ----------------------------
-DROP TABLE IF EXISTS `spider_mgtv`;
 CREATE TABLE `spider_mgtv` (
   `episode_id` int NOT NULL COMMENT '集id',
   `channel_id` int DEFAULT '0' COMMENT '频道id',

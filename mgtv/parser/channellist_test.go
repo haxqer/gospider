@@ -36,8 +36,8 @@ func TestParseChannelList(t *testing.T) {
 				},
 				Items: nil,
 			},
-			requestSize: 14,
-			itemSize:    14,
+			requestSize: 42,
+			itemSize:    0,
 		},
 	}
 	for _, tt := range tests {

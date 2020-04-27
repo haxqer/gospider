@@ -110,8 +110,17 @@ itemsave
 ---
 ## todo
 - [x] etcd 服务注册/发现
-- [ ] micro 健康检查
+- [x] micro 健康检查
 - [ ] prometheus 监控
 - [ ] jaeger/zipkin 链路追踪
 - [ ] hystrix hystrix-dashboard 熔断器 熔断仪表盘
+- [ ] rabbitmq broker 
+- [ ] Testing: Unit Testing, Behavior Testing, Integration Testing
+- [ ] 提供手工采集的接口
+- [ ] itemsave 接口 (grpc => api)
+- [ ] 限流: 提供手工采集、itemsave
+- [ ] error 日志收集
+
+
+
 

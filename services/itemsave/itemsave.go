@@ -10,8 +10,9 @@ import (
 	"github.com/micro/go-micro/v2/registry"
 	"github.com/micro/go-micro/v2/registry/etcd"
 	"github.com/micro/go-micro/v2/transport/grpc"
-
+	//"github.com/micro/go-plugins/broker/rabbitmq/v2"
 	"log"
+	"time"
 )
 
 type Save struct{}
@@ -63,7 +64,7 @@ func init() {
 
 func main() {
 	registryReg := etcd.NewRegistry(registry.Addrs(setting.ServerSetting.RegistryAddr))
-	//broker := kafka.NewBroker()
+	//broker := rabbitmq.NewBroker()
 	transport := grpc.NewTransport()
 
 	newService := micro.NewService(
@@ -71,6 +72,8 @@ func main() {
 		micro.Transport(transport),
 		//micro.Broker(broker),
 		micro.Registry(registryReg),
+		micro.RegisterTTL(time.Second*30),
+		micro.RegisterInterval(time.Second*20),
 		//micro.Address(":19999"),
 	)
 
@@ -83,4 +86,3 @@ func main() {
 		log.Fatal(err)
 	}
 }
-

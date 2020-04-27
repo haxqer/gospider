@@ -26,7 +26,7 @@ func ItemSaver() (chan engine.Item, error) {
 		for {
 			item := <-out
 
-			episodeStr := strconv.Itoa(int(item.EpisodeId))
+			episodeStr := strconv.Itoa(int(item.DramaId)) + ":" + strconv.Itoa(int(item.EpisodeId))
 			if _, found := storedID.Get(episodeStr); found {
 				continue
 			}

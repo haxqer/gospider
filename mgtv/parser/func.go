@@ -16,7 +16,7 @@ func GenEpisodeAPIURLByEpisodeID(episodeID string, page int) string {
 }
 
 func GenEpisodeAPIURLByEpisodeIDNew(episodeID string, page int) string {
-	return genEpisodeAPIURLByEpisodeID(episodeID, page, 6)
+	return genEpisodeAPIURLByEpisodeID(episodeID, page, 25)
 }
 
 func genEpisodeAPIURLByEpisodeID(episodeID string, page int, pageSize int) string {

@@ -6,7 +6,7 @@ import (
 	"regexp"
 )
 
-var channelRe = regexp.MustCompile(`<a[^>]*href="(//www\.mgtv\.com/\w+/\d+/\d+\.html)"[^>]*>([^<]+)</a>`)
+var channelRe = regexp.MustCompile(`href="(//www\.mgtv\.com/\w+/\d+/\d+\.html)"`)
 var episodeRe = regexp.MustCompile(`//www\.mgtv\.com/\w+/\d+/(\d+)\.html`)
 
 func ParseChannel(contents []byte, channelID string) engine.ParseResult {

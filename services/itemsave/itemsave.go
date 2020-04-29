@@ -10,7 +10,6 @@ import (
 	"github.com/micro/go-micro/v2/registry"
 	"github.com/micro/go-micro/v2/registry/etcd"
 	"github.com/micro/go-micro/v2/transport/grpc"
-	//"github.com/micro/go-plugins/broker/rabbitmq/v2"
 	"log"
 	"time"
 )
@@ -64,7 +63,7 @@ func init() {
 
 func main() {
 	registryReg := etcd.NewRegistry(registry.Addrs(setting.ServerSetting.RegistryAddr))
-	//broker := rabbitmq.NewBroker()
+	//broker := brokerRedis.NewBroker()
 	transport := grpc.NewTransport()
 
 	newService := micro.NewService(

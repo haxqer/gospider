@@ -8,11 +8,11 @@ import (
 	"git.trac.cn/nv/spider/pkg/logging"
 	"git.trac.cn/nv/spider/pkg/setting"
 	itemsave "git.trac.cn/nv/spider/services/itemsave/proto"
-	"github.com/micro/go-micro/v2/client"
-	"github.com/micro/go-micro/v2/client/grpc"
+	"github.com/micro/go-micro/v2"
 	"github.com/micro/go-micro/v2/client/selector"
 	"github.com/micro/go-micro/v2/registry"
 	"github.com/micro/go-micro/v2/registry/etcd"
+	"github.com/micro/go-micro/v2/transport/grpc"
 	"github.com/patrickmn/go-cache"
 	"strconv"
 	"time"
@@ -32,7 +32,7 @@ func ItemSaver() (chan engine.Item, error) {
 			}
 			storedID.SetDefault(episodeStr, true)
 
-			err := callgrpc(&item)
+			err := call(&item)
 			if err != nil {
 				logging.Error(fmt.Sprintf("Item Saver: error saving itemsave %v: %v", item, err))
 				continue
@@ -56,22 +56,27 @@ func Save(mgtv *model.Mgtv) error {
 	return nil
 }
 
+var itemSaveClient itemsave.SaveService
+//var itemPub micro.Event
+
 func Setup() {
-	registryReg := etcd.NewRegistry(registry.Addrs(setting.ServerSetting.RegistryAddr))
+	microRegistry := etcd.NewRegistry(registry.Addrs(setting.ServerSetting.RegistryAddr))
 	microSelector := selector.NewSelector(
-		selector.Registry(registryReg),
+		selector.Registry(microRegistry),
 		selector.SetStrategy(selector.RoundRobin),
 	)
-
-	client.DefaultClient = grpc.NewClient(
-		client.Selector(microSelector),
-		client.Registry(registryReg),
+	microTransport := grpc.NewTransport()
+	microService := micro.NewService(
+		micro.Name("greeter.client"),
+		micro.Selector(microSelector),
+		micro.Transport(microTransport),
 	)
-	client.DefaultPoolSize = 300
+	itemSaveClient = itemsave.NewSaveService("api.trac.cn.saveitem", microService.Client())
+	//itemPub = micro.NewEvent("trac.saveitem", microService.Client())
 }
 
-func callgrpc(mgtv * model.Mgtv) error {
-	req := client.NewRequest("api.trac.cn.saveitem", "Save.SaveItem", &itemsave.Item{
+func call(mgtv * model.Mgtv) error {
+	rsp, err := itemSaveClient.SaveItem(context.TODO(), &itemsave.Item{
 		ChannelId:   mgtv.ChannelId,
 		DramaId:     mgtv.DramaId,
 		DramaTitle:  mgtv.DramaTitle,
@@ -92,27 +97,10 @@ func callgrpc(mgtv * model.Mgtv) error {
 		NextId:      mgtv.NextId,
 		SrcClipId:   mgtv.SrcClipId,
 	})
-
-	rsp := &itemsave.SaveResponse{}
-	// Call service
-	if err := client.Call(context.Background(), req, rsp); err != nil {
+	if err != nil {
 		fmt.Println("call err: ", err, rsp)
 		return err
 	}
 
 	return nil
 }
-//func Save(client *elastic.Client, itemsave engine.Item) error {
-//	if itemsave.ID == "" {
-//		return errors.New("must supply ID")
-//	}
-//	_, err := client.Index().
-//		Index("mgtv_episode").
-//		Id(itemsave.ID).
-//		BodyJson(itemsave).Do(context.Background())
-//	if err != nil {
-//		return err
-//	}
-//
-//	return nil
-//}

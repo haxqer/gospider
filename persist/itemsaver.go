@@ -8,12 +8,18 @@ import (
 	"git.trac.cn/nv/spider/pkg/logging"
 	"git.trac.cn/nv/spider/pkg/setting"
 	itemsave "git.trac.cn/nv/spider/services/itemsave/proto"
+	hystrixGo "github.com/afex/hystrix-go/hystrix"
+	metricCollector "github.com/afex/hystrix-go/hystrix/metric_collector"
+	"github.com/afex/hystrix-go/plugins"
 	"github.com/micro/go-micro/v2"
 	"github.com/micro/go-micro/v2/client/selector"
 	"github.com/micro/go-micro/v2/registry"
 	"github.com/micro/go-micro/v2/registry/etcd"
 	"github.com/micro/go-micro/v2/transport/grpc"
+	"github.com/micro/go-plugins/wrapper/breaker/hystrix/v2"
 	"github.com/patrickmn/go-cache"
+	"net"
+	"net/http"
 	"strconv"
 	"time"
 )
@@ -67,10 +73,31 @@ func Setup() {
 	)
 	microTransport := grpc.NewTransport()
 	microService := micro.NewService(
-		micro.Name("greeter.client"),
+		micro.Name("saveitem.client"),
 		micro.Selector(microSelector),
 		micro.Transport(microTransport),
+		micro.WrapClient(hystrix.NewClientWrapper()),
 	)
+	microService.Init()
+
+	hystrixGo.DefaultMaxConcurrent = 1
+	hystrixGo.DefaultTimeout = 1
+	hystrixGo.DefaultSleepWindow = 1000
+	hystrixStreamHandler := hystrixGo.NewStreamHandler()
+	hystrixStreamHandler.Start()
+	go http.ListenAndServe(net.JoinHostPort("", "81"), hystrixStreamHandler)
+
+	c, err := plugins.InitializeStatsdCollector(&plugins.StatsdCollectorConfig{
+		StatsdAddr: "localhost:8125",
+		Prefix:     "myapp.hystrix",
+	})
+	if err != nil {
+		panic(fmt.Sprintf("could not initialize statsd client: %v", err))
+	}
+
+	metricCollector.Registry.Register(c.NewStatsdCollector)
+
+
 	itemSaveClient = itemsave.NewSaveService("api.trac.cn.saveitem", microService.Client())
 	//itemPub = micro.NewEvent("trac.saveitem", microService.Client())
 }
@@ -98,7 +125,12 @@ func call(mgtv * model.Mgtv) error {
 		SrcClipId:   mgtv.SrcClipId,
 	})
 	if err != nil {
-		fmt.Println("call err: ", err, rsp)
+		//if errors.Cause(err) == hystrixGo.ErrCircuitOpen {
+		if hystrixErr, ok := err.(hystrixGo.CircuitError); ok {
+			fmt.Println(hystrixErr)
+			return err
+		}
+		fmt.Println("grpc call err: ", err, rsp)
 		return err
 	}
 

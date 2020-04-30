@@ -113,11 +113,11 @@ itemsave
 - [x] micro 健康检查
 - [ ] prometheus 监控
 - [ ] jaeger/zipkin 链路追踪
-- [ ] hystrix hystrix-dashboard 熔断器 熔断仪表盘
+- [x] hystrix 熔断器 (spider 使用)
+- [x] uber.ratelimiter 限流 (itemsave 使用)
 - [ ] Testing: Unit Testing, Behavior Testing, Integration Testing
 - [ ] 提供手工采集的接口
 - [ ] itemsave 接口 (grpc => api)
-- [ ] 限流: 提供手工采集、itemsave
 - [ ] error 日志收集
 
 

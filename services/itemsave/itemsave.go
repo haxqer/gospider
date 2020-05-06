@@ -6,11 +6,11 @@ import (
 	"git.trac.cn/nv/spider/pkg/logging"
 	"git.trac.cn/nv/spider/pkg/setting"
 	item "git.trac.cn/nv/spider/services/itemsave/proto"
-	limiter "github.com/micro/go-plugins/wrapper/ratelimiter/uber/v2"
 	"github.com/micro/go-micro/v2"
 	"github.com/micro/go-micro/v2/registry"
 	"github.com/micro/go-micro/v2/registry/etcd"
 	"github.com/micro/go-micro/v2/transport/grpc"
+	limiter "github.com/micro/go-plugins/wrapper/ratelimiter/uber/v2"
 	"log"
 	"time"
 )

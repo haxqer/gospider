@@ -9,8 +9,6 @@ import (
 	"git.trac.cn/nv/spider/pkg/setting"
 	itemsave "git.trac.cn/nv/spider/services/itemsave/proto"
 	hystrixGo "github.com/afex/hystrix-go/hystrix"
-	metricCollector "github.com/afex/hystrix-go/hystrix/metric_collector"
-	"github.com/afex/hystrix-go/plugins"
 	"github.com/micro/go-micro/v2"
 	"github.com/micro/go-micro/v2/client/selector"
 	"github.com/micro/go-micro/v2/registry"
@@ -18,8 +16,6 @@ import (
 	"github.com/micro/go-micro/v2/transport/grpc"
 	"github.com/micro/go-plugins/wrapper/breaker/hystrix/v2"
 	"github.com/patrickmn/go-cache"
-	"net"
-	"net/http"
 	"strconv"
 	"time"
 )
@@ -38,7 +34,7 @@ func ItemSaver() (chan engine.Item, error) {
 			}
 			storedID.SetDefault(episodeStr, true)
 
-			err := call(&item)
+			err := RpcCall(&item)
 			if err != nil {
 				logging.Error(fmt.Sprintf("Item Saver: error saving itemsave %v: %v", item, err))
 				continue
@@ -80,29 +76,14 @@ func Setup() {
 	)
 	microService.Init()
 
-	hystrixGo.DefaultMaxConcurrent = 1
-	hystrixGo.DefaultTimeout = 1
-	hystrixGo.DefaultSleepWindow = 1000
-	hystrixStreamHandler := hystrixGo.NewStreamHandler()
-	hystrixStreamHandler.Start()
-	go http.ListenAndServe(net.JoinHostPort("", "81"), hystrixStreamHandler)
-
-	c, err := plugins.InitializeStatsdCollector(&plugins.StatsdCollectorConfig{
-		StatsdAddr: "localhost:8125",
-		Prefix:     "myapp.hystrix",
-	})
-	if err != nil {
-		panic(fmt.Sprintf("could not initialize statsd client: %v", err))
-	}
-
-	metricCollector.Registry.Register(c.NewStatsdCollector)
-
+	hystrixGo.DefaultMaxConcurrent = 200
+	hystrixGo.DefaultTimeout = 2000
 
 	itemSaveClient = itemsave.NewSaveService("api.trac.cn.saveitem", microService.Client())
 	//itemPub = micro.NewEvent("trac.saveitem", microService.Client())
 }
 
-func call(mgtv * model.Mgtv) error {
+func RpcCall(mgtv *model.Mgtv) error {
 	rsp, err := itemSaveClient.SaveItem(context.TODO(), &itemsave.Item{
 		ChannelId:   mgtv.ChannelId,
 		DramaId:     mgtv.DramaId,
@@ -130,7 +111,7 @@ func call(mgtv * model.Mgtv) error {
 			fmt.Println(hystrixErr)
 			return err
 		}
-		fmt.Println("grpc call err: ", err, rsp)
+		fmt.Println("grpc RpcCall err: ", err, rsp)
 		return err
 	}
 

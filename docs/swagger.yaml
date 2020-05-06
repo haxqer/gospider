@@ -1,0 +1,97 @@
+definitions:
+  app.SpiderRequest:
+    properties:
+      channel_id:
+        type: integer
+      url:
+        type: string
+    required:
+    - channel_id
+    - url
+    type: object
+  app.SpiderResponse:
+    properties:
+      code:
+        type: integer
+      data:
+        items:
+          $ref: '#/definitions/model.Mgtv'
+        type: array
+      error:
+        type: object
+      length:
+        type: integer
+      msg:
+        type: string
+    type: object
+  model.Mgtv:
+    properties:
+      channel_id:
+        type: integer
+      content_type:
+        type: string
+      drama_id:
+        type: integer
+      drama_title:
+        type: string
+      duration:
+        type: integer
+      episode_id:
+        type: integer
+      episode_url:
+        type: string
+      image:
+        type: string
+      is_intact:
+        type: string
+      is_new:
+        type: string
+      is_vip:
+        type: string
+      next_id:
+        type: string
+      play_counter:
+        type: integer
+      src_clip_id:
+        type: string
+      title1:
+        type: string
+      title2:
+        type: string
+      title3:
+        type: string
+      title4:
+        type: string
+      ts:
+        type: string
+    type: object
+info:
+  contact: {}
+  license: {}
+paths:
+  /v1/spider:
+    post:
+      description: insert episode
+      operationId: insert episode
+      parameters:
+      - description: Name
+        in: body
+        name: name
+        required: true
+        schema:
+          $ref: '#/definitions/app.SpiderRequest'
+      produces:
+      - application/json
+      responses:
+        "200":
+          description: OK
+          schema:
+            $ref: '#/definitions/app.SpiderResponse'
+        "400":
+          description: Bad Request
+          schema:
+            $ref: '#/definitions/app.SpiderResponse'
+      summary: Insert episode from URL of MGTV
+      tags:
+      - Spider
+swagger: "2.0"

@@ -116,7 +116,7 @@ itemsave
 - [x] hystrix 熔断器 (spider 使用)
 - [x] uber.ratelimiter 限流 (itemsave 使用)
 - [ ] Testing: Unit Testing, Behavior Testing, Integration Testing
-- [ ] 提供手工采集的接口
+- [x] 提供手工采集的接口
 - [ ] itemsave 接口 (grpc => api)
 - [ ] error 日志收集
 

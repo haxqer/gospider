@@ -25,6 +25,11 @@ type Server struct {
 	SaveItemExpire time.Duration
 	IsFull         bool
 	RegistryAddr   string
+
+	RunMode      string
+	HttpPort     int
+	ReadTimeout  time.Duration
+	WriteTimeout time.Duration
 }
 
 var ServerSetting = &Server{}
@@ -58,6 +63,10 @@ func Setup() {
 	ServerSetting.RateLimit = ServerSetting.RateLimit * time.Millisecond
 	ServerSetting.UrlExpire = ServerSetting.UrlExpire * time.Minute
 	ServerSetting.SaveItemExpire = ServerSetting.SaveItemExpire * time.Minute
+
+	ServerSetting.ReadTimeout = ServerSetting.ReadTimeout * time.Second
+	ServerSetting.WriteTimeout = ServerSetting.WriteTimeout * time.Second
+
 }
 
 func mapTo(section string, v interface{}) {

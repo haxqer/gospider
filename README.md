@@ -17,9 +17,13 @@
 + micro: 第三方工具包，etcd 可视化，查看 itemsave 服务状态 (https://github.com/micro/micro/releases 建议 v2.4.0)
 + etcd: 注册中心 (github.com/etcd-io/etcd 建议 v3.4.x)
 + spiderhttp: 手工采集接口，提供 http 接口(后续可能提供 grpc 接口)，解决紧急采集剧集的需求(自动采集有一定的延迟)
++ prometheus: 应用程序状态监控(https://github.com/prometheus/prometheus/releases 建议 v2.18.0)
++ grafana: 可视化 (https://github.com/grafana/grafana/releases 建议 v6.7.3)
 
 
 数据库 schema 在 `docs/sql` 中
+
+grafana 配置在 `docs/grafana` 中
 
 默认情况下，日志文件在 `runtime` 下 
 
@@ -64,6 +68,7 @@ database
 
 server
 + RegistryAddr: 注册中心地址
++ MetricsPort: expose Prometheus metrics (注意端口不要和其他服务相同)
 
 #### spider
 spider 无需配置数据库
@@ -71,6 +76,7 @@ spider 无需配置数据库
 server
 + RegistryAddr: 注册中心地址
 + UrlExpire: 控制采集频次，单位为 分钟
++ MetricsPort: expose Prometheus metrics (注意端口不要和其他服务相同)
 
 
 #### spiderhttp
@@ -80,6 +86,7 @@ server
 + RegistryAddr: 注册中心地址
 + RunMode: 正式环境改为 `release`
 + HttpPort: http 服务的端口
++ MetricsPort: expose Prometheus metrics (注意端口不要和其他服务相同)
 
 ---
 ## 部署
@@ -88,6 +95,8 @@ server
 3. 启动 `itemsave` (可多台，支持水平扩展)
 4. 启动 `spider` (目前建议一台，支持水平扩展)
 5. 启动 `spiderhttp` (目前建议一台，支持水平扩展)
+6. 启动 `prometheus` 采集 go 应用程序数据
+7. 启动 `grafana` 展示 prometheus 采集的数据
 
 ### etcd
 
@@ -112,6 +121,45 @@ server
 
 启动成功后，接收http请求，采集指定芒果剧集，向 `itemsave` 投递数据
 
+### prometheus
+
+采集配置
+
+prometheus.yml
+
+```yaml
+scrape_configs:
+- job_name: itemsave-01
+  scrape_interval: 10s
+  static_configs:
+  - targets:
+    - localhost:12112
+
+- job_name: itemsave-02
+  scrape_interval: 10s
+  static_configs:
+  - targets:
+    - localhost:12113
+
+- job_name: spider-01
+  scrape_interval: 10s
+  static_configs:
+  - targets:
+    - localhost:12121
+
+- job_name: spiderhttp-01
+  scrape_interval: 10s
+  static_configs:
+  - targets:
+    - localhost:12131
+
+```
+
+### grafana
+连接 prometheus 后，导入 `docs/grafana` 中的配置 
+
+
+
 ---
 ## 数据流向(用途描述)
 数据流向:
@@ -132,15 +180,16 @@ micro
 itemsave
 ![itemsave](docs/images/itemsave.png)
 
+
  
 ---
 ## todo
 - [x] etcd 服务注册/发现
 - [x] micro 健康检查
-- [ ] prometheus 监控
+- [x] prometheus 监控
 - [ ] jaeger/zipkin 链路追踪
 - [x] hystrix 熔断器 (spider 使用)
-- [x] uber.ratelimiter 限流 (itemsave 使用)
+- [x] uber.ratelimiter 限流 (itemsave spiderhttp 使用)
 - [ ] Testing: Unit Testing, Behavior Testing, Integration Testing
 - [x] 提供手工采集的接口
 - [x] itemsave 接口 (grpc => api)

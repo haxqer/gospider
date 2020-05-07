@@ -1,6 +1,7 @@
 package main
 
 import (
+	"fmt"
 	"git.trac.cn/nv/spider/engine"
 	"git.trac.cn/nv/spider/fetcher"
 	"git.trac.cn/nv/spider/mgtv/parser"
@@ -8,6 +9,9 @@ import (
 	"git.trac.cn/nv/spider/pkg/logging"
 	"git.trac.cn/nv/spider/pkg/setting"
 	"git.trac.cn/nv/spider/scheduler"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"log"
+	"net/http"
 )
 
 func init() {
@@ -19,6 +23,15 @@ func init() {
 }
 
 func main() {
+	go func() {
+		metricsEndPoint := fmt.Sprintf(":%d", setting.ServerSetting.MetricsPort)
+		http.Handle("/metrics", promhttp.Handler())
+		err := http.ListenAndServe(metricsEndPoint, nil)
+		if err != nil {
+			log.Printf("[info] start metrics server of prometheus listening %s", metricsEndPoint)
+		}
+	}()
+
 	itemChan, err := persist.ItemSaver()
 	if err != nil {
 		panic(err)

@@ -2,6 +2,7 @@ package main
 
 import (
 	"context"
+	"fmt"
 	"git.trac.cn/nv/spider/model"
 	"git.trac.cn/nv/spider/pkg/logging"
 	"git.trac.cn/nv/spider/pkg/setting"
@@ -11,7 +12,9 @@ import (
 	"github.com/micro/go-micro/v2/registry/etcd"
 	"github.com/micro/go-micro/v2/transport/grpc"
 	limiter "github.com/micro/go-plugins/wrapper/ratelimiter/uber/v2"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"log"
+	"net/http"
 	"time"
 )
 
@@ -63,6 +66,15 @@ func init() {
 }
 
 func main() {
+	go func() {
+		metricsEndPoint := fmt.Sprintf(":%d", setting.ServerSetting.MetricsPort)
+		http.Handle("/metrics", promhttp.Handler())
+		err := http.ListenAndServe(metricsEndPoint, nil)
+		if err != nil {
+			log.Printf("[info] start metrics server of prometheus listening %s", metricsEndPoint)
+		}
+	}()
+
 	const QPS = 1000
 	registryReg := etcd.NewRegistry(registry.Addrs(setting.ServerSetting.RegistryAddr))
 	//broker := brokerRedis.NewBroker()

@@ -10,6 +10,7 @@ import (
 	"git.trac.cn/nv/spider/pkg/validator"
 	"git.trac.cn/nv/spider/services/spiderhttp/routers"
 	"github.com/gin-gonic/gin"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"log"
 	"net/http"
 )
@@ -23,9 +24,16 @@ func init() {
 }
 
 func main() {
+	go func() {
+		metricsEndPoint := fmt.Sprintf(":%d", setting.ServerSetting.MetricsPort)
+		http.Handle("/metrics", promhttp.Handler())
+		err := http.ListenAndServe(metricsEndPoint, nil)
+		if err != nil {
+			log.Printf("[info] start metrics server of prometheus listening %s", metricsEndPoint)
+		}
+	}()
+
 	gin.SetMode(setting.ServerSetting.RunMode)
-
-
 
 	routersInit := routers.InitRouter()
 	readTimeout := setting.ServerSetting.ReadTimeout

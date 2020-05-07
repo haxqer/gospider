@@ -30,6 +30,8 @@ type Server struct {
 	HttpPort     int
 	ReadTimeout  time.Duration
 	WriteTimeout time.Duration
+
+	MetricsPort int
 }
 
 var ServerSetting = &Server{}

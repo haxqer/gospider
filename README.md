@@ -16,6 +16,7 @@
 + itemsave: 注册服务至 etcd，接收 spider 投递的数据存入数据库(mysql)中
 + micro: 第三方工具包，etcd 可视化，查看 itemsave 服务状态 (https://github.com/micro/micro/releases 建议 v2.4.0)
 + etcd: 注册中心 (github.com/etcd-io/etcd 建议 v3.4.x)
++ spiderhttp: 手工采集接口，提供 http 接口(后续可能提供 grpc 接口)，解决紧急采集剧集的需求(自动采集有一定的延迟)
 
 
 数据库 schema 在 `docs/sql` 中
@@ -36,6 +37,12 @@
 + linux: `env GOOS=linux go build ./services/itemsave`
 
 生成二进制文件 `itemsave` 在工作目录
+
+### SpiderHttp 编译
++ dev: `go build ./services/spiderhttp`
++ linux: `env GOOS=linux go build ./services/spiderhttp`
+
+生成二进制文件 `spiderhttp` 在工作目录
 
 ---
 ## 配置文件
@@ -65,12 +72,22 @@ server
 + RegistryAddr: 注册中心地址
 + UrlExpire: 控制采集频次，单位为 分钟
 
+
+#### spiderhttp
+spiderhttp 无需配置数据库
+
+server
++ RegistryAddr: 注册中心地址
++ RunMode: 正式环境改为 `release`
++ HttpPort: http 服务的端口
+
 ---
 ## 部署
 1. 启动 `etcd`
 2. 启动 `micro` 可视化服务
 3. 启动 `itemsave` (可多台，支持水平扩展)
 4. 启动 `spider` (目前建议一台，支持水平扩展)
+5. 启动 `spiderhttp` (目前建议一台，支持水平扩展)
 
 ### etcd
 
@@ -90,6 +107,11 @@ server
 
 启动成功后，会向 `itemsave` 投递数据，每投递1万条，会写一次 log(log 无需保存)
 
+### spiderhttp
+修改配置文件的 `server` (只需配置注册中心地址和http配置)
+
+启动成功后，接收http请求，采集指定芒果剧集，向 `itemsave` 投递数据
+
 ---
 ## 数据流向(用途描述)
 数据流向:
@@ -97,6 +119,10 @@ server
 2. itemsave 写入 mysql
 3. cpanel 上的脚本定时读取 mysql 数据生成索引 (用于定向剧集), 写入 redis
 4. dsp 读取 redis 中的剧集索引，指导广告投放
+
+http服务:
+1. 接收请求中的 mgtv_url
+2. 采集剧集信息，投递给 itemsave
 
 ---
 ## micro web
@@ -117,8 +143,9 @@ itemsave
 - [x] uber.ratelimiter 限流 (itemsave 使用)
 - [ ] Testing: Unit Testing, Behavior Testing, Integration Testing
 - [x] 提供手工采集的接口
-- [ ] itemsave 接口 (grpc => api)
+- [x] itemsave 接口 (grpc => api)
 - [ ] error 日志收集
+- [ ] channel 数据长度监控
 
 
 ## 异步消费 

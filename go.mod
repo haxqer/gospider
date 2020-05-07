@@ -16,7 +16,7 @@ require (
 	github.com/micro/go-plugins/wrapper/ratelimiter/uber/v2 v2.5.0
 	github.com/patrickmn/go-cache v2.1.0+incompatible
 	github.com/pquerna/ffjson v0.0.0-20190930134022-aa0246cd15f7
-	github.com/prometheus/client_golang v1.6.0 // indirect
+	github.com/prometheus/client_golang v1.6.0
 	github.com/swaggo/gin-swagger v1.2.0
 	github.com/swaggo/swag v1.5.1
 	golang.org/x/net v0.0.0-20200320220750-118fecf932d8

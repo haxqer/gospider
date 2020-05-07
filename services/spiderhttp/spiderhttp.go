@@ -27,10 +27,8 @@ func main() {
 	go func() {
 		metricsEndPoint := fmt.Sprintf(":%d", setting.ServerSetting.MetricsPort)
 		http.Handle("/metrics", promhttp.Handler())
-		err := http.ListenAndServe(metricsEndPoint, nil)
-		if err != nil {
-			log.Printf("[info] start metrics server of prometheus listening %s", metricsEndPoint)
-		}
+		log.Printf("[info] start metrics server of prometheus listening %s", metricsEndPoint)
+		http.ListenAndServe(metricsEndPoint, nil)
 	}()
 
 	gin.SetMode(setting.ServerSetting.RunMode)

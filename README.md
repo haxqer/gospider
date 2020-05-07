@@ -15,17 +15,16 @@
 + spider: 负责采集数据，从 etcd 获取 itemsave 服务列表，将采集的数据投递给 itemsave (grpc)
 + itemsave: 注册服务至 etcd，接收 spider 投递的数据存入数据库(mysql)中
 + micro: 第三方工具包，etcd 可视化，查看 itemsave 服务状态 (https://github.com/micro/micro/releases 建议 v2.4.0)
-+ etcd: 注册中心 (github.com/etcd-io/etcd 建议 v3.4.x)
++ etcd: 注册中心 (https://github.com/etcd-io/etcd/releases 建议 v3.4.x)
 + spiderhttp: 手工采集接口，提供 http 接口(后续可能提供 grpc 接口)，解决紧急采集剧集的需求(自动采集有一定的延迟)
-+ prometheus: 应用程序状态监控(https://github.com/prometheus/prometheus/releases 建议 v2.18.0)
-+ grafana: 可视化 (https://github.com/grafana/grafana/releases 建议 v6.7.3)
++ prometheus: 应用程序状态监控(https://github.com/prometheus/prometheus/releases 建议 v2.18.x)
++ grafana: 可视化 (https://github.com/grafana/grafana/releases 建议 v6.7.x)
 
-
-数据库 schema 在 `docs/sql` 中
-
-grafana 配置在 `docs/grafana` 中
-
-默认情况下，日志文件在 `runtime` 下 
+其他说明:
++ 数据库 schema 在 `docs/sql` 中
++ grafana 配置在 `docs/grafana` 中
++ 默认情况下，日志文件在 `runtime` 下 
++ swagger UI 仅开发模式需要，`server.RunMode` 改为 `debug` 即可开启。 开启后访问 `http://YOURIP:PORT/swagger/index.html`
 
 
 ---
@@ -68,7 +67,7 @@ database
 
 server
 + RegistryAddr: 注册中心地址
-+ MetricsPort: expose Prometheus metrics (注意端口不要和其他服务相同)
++ MetricsPort: expose Prometheus metrics (如果部署在同一台机器，注意端口不要和其他服务相同)
 
 #### spider
 spider 无需配置数据库
@@ -76,7 +75,7 @@ spider 无需配置数据库
 server
 + RegistryAddr: 注册中心地址
 + UrlExpire: 控制采集频次，单位为 分钟
-+ MetricsPort: expose Prometheus metrics (注意端口不要和其他服务相同)
++ MetricsPort: expose Prometheus metrics (如果部署在同一台机器，注意端口不要和其他服务相同)
 
 
 #### spiderhttp
@@ -86,7 +85,7 @@ server
 + RegistryAddr: 注册中心地址
 + RunMode: 正式环境改为 `release`
 + HttpPort: http 服务的端口
-+ MetricsPort: expose Prometheus metrics (注意端口不要和其他服务相同)
++ MetricsPort: expose Prometheus metrics (如果部署在同一台机器，注意端口不要和其他服务相同)
 
 ---
 ## 部署
@@ -158,7 +157,7 @@ scrape_configs:
 ### grafana
 连接 prometheus 后，导入 `docs/grafana` 中的配置 
 
-
+![grafana](docs/images/grafana-prometheus.png)
 
 ---
 ## 数据流向(用途描述)
@@ -186,15 +185,20 @@ itemsave
 ## todo
 - [x] etcd 服务注册/发现
 - [x] micro 健康检查
-- [x] prometheus 监控
-- [ ] jaeger/zipkin 链路追踪
+- [x] prometheus 监控应用状态
+- [x] grafana 可视化
+- [ ] jaeger/zipkin 微服务链路追踪
 - [x] hystrix 熔断器 (spider 使用)
 - [x] uber.ratelimiter 限流 (itemsave spiderhttp 使用)
 - [ ] Testing: Unit Testing, Behavior Testing, Integration Testing
 - [x] 提供手工采集的接口
 - [x] itemsave 接口 (grpc => api)
 - [ ] error 日志收集
-- [ ] channel 数据长度监控
+
+### prometheus 监控
+- [ ] channel 数据长度
+- [ ] QPS
+- [ ] 警报
 
 
 ## 异步消费 

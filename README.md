@@ -22,7 +22,7 @@
 
 其他说明:
 + 数据库 schema 在 `docs/sql` 中
-+ grafana 配置在 `docs/grafana` 中
++ grafana 配置在 `docs/grafana/bas-spider-metrics.json`
 + 默认情况下，日志文件在 `runtime` 下 
 + swagger UI 仅开发模式需要，`server.RunMode` 改为 `debug` 即可开启。 开启后访问 `http://YOURIP:PORT/swagger/index.html`
 
@@ -155,7 +155,7 @@ scrape_configs:
 ```
 
 ### grafana
-连接 prometheus 后，导入 `docs/grafana` 中的配置 
+连接 prometheus 后，导入 `docs/grafana/bas-spider-metrics.json` 中的配置 
 
 ![grafana](docs/images/grafana-prometheus.png)
 
@@ -204,5 +204,35 @@ itemsave
 ## 异步消费 
 (已尝试，暂时不启用)
 - [x] rabbitmq/redis broker 
+
+
+---
+## 非必须(建议)
++ node_exporter: 采集 (https://github.com/prometheus/node_exporter/releases 建议 v0.18.1)
+
+### node_exporter
+参考 (https://github.com/prometheus/node_exporter)
+
+#### prometheus
+
+采集配置
+
+prometheus.yml
+
+```yaml
+scrape_configs:
+- job_name: node-201
+  scrape_interval: 10s
+  static_configs:
+  - targets:
+    - 172.31.0.201:9100
+
+```
+
+#### grafana
+连接 prometheus 后，导入 `docs/grafana/node-exporter.json` 中的配置 
+
+![grafana](docs/images/grafana-prometheus-node.png)
+
 
 

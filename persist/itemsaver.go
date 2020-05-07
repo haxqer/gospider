@@ -2,6 +2,7 @@ package persist
 
 import (
 	"context"
+	"contrib.go.opencensus.io/exporter/jaeger"
 	"fmt"
 	"git.trac.cn/nv/spider/engine"
 	"git.trac.cn/nv/spider/model"
@@ -15,7 +16,10 @@ import (
 	"github.com/micro/go-micro/v2/registry/etcd"
 	"github.com/micro/go-micro/v2/transport/grpc"
 	"github.com/micro/go-plugins/wrapper/breaker/hystrix/v2"
+	"github.com/micro/go-plugins/wrapper/trace/opencensus/v2"
 	"github.com/patrickmn/go-cache"
+	"go.opencensus.io/trace"
+	"log"
 	"strconv"
 	"time"
 )
@@ -67,13 +71,30 @@ func Setup() {
 		selector.Registry(microRegistry),
 		selector.SetStrategy(selector.RoundRobin),
 	)
+
+	exporter, err := jaeger.NewExporter(jaeger.Options{
+		CollectorEndpoint: "http://172.31.0.201:14268/api/traces",
+		Process: jaeger.Process{
+			ServiceName: "saveitem",
+		},
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+	trace.RegisterExporter(exporter)
+	trace.ApplyConfig(trace.Config{DefaultSampler: trace.AlwaysSample()})
+
 	microTransport := grpc.NewTransport()
 	microService := micro.NewService(
 		micro.Name("saveitem.client"),
 		micro.Selector(microSelector),
 		micro.Transport(microTransport),
+		micro.WrapClient(opencensus.NewClientWrapper()),
+		micro.WrapHandler(opencensus.NewHandlerWrapper()),
+		micro.WrapSubscriber(opencensus.NewSubscriberWrapper()),
 		micro.WrapClient(hystrix.NewClientWrapper()),
 	)
+
 	microService.Init()
 
 	hystrixGo.DefaultMaxConcurrent = 200

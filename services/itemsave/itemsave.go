@@ -2,7 +2,8 @@ package main
 
 import (
 	"context"
-	"fmt"
+	"contrib.go.opencensus.io/exporter/jaeger"
+	"contrib.go.opencensus.io/exporter/prometheus"
 	"git.trac.cn/nv/spider/model"
 	"git.trac.cn/nv/spider/pkg/logging"
 	"git.trac.cn/nv/spider/pkg/setting"
@@ -12,7 +13,9 @@ import (
 	"github.com/micro/go-micro/v2/registry/etcd"
 	"github.com/micro/go-micro/v2/transport/grpc"
 	limiter "github.com/micro/go-plugins/wrapper/ratelimiter/uber/v2"
-	"github.com/prometheus/client_golang/prometheus/promhttp"
+	"github.com/micro/go-plugins/wrapper/trace/opencensus/v2"
+	"go.opencensus.io/stats/view"
+	"go.opencensus.io/trace"
 	"log"
 	"net/http"
 	"time"
@@ -67,11 +70,40 @@ func init() {
 
 func main() {
 	go func() {
-		metricsEndPoint := fmt.Sprintf(":%d", setting.ServerSetting.MetricsPort)
-		http.Handle("/metrics", promhttp.Handler())
-		log.Printf("[info] start metrics server of prometheus listening %s", metricsEndPoint)
-		http.ListenAndServe(metricsEndPoint, nil)
+		//metricsEndPoint := fmt.Sprintf(":%d", setting.ServerSetting.MetricsPort)
+		//metricsEndPoint := ":12002"
+		//http.Handle("/metrics", promhttp.Handler())
+		//log.Printf("[info] start metrics server of prometheus listening %s", metricsEndPoint)
+		//http.ListenAndServe(metricsEndPoint, nil)
 	}()
+
+
+	if err := view.Register(opencensus.DefaultServerViews...); err != nil {
+		log.Fatal(err)
+	}
+	exporter1, err := prometheus.NewExporter(prometheus.Options{})
+	if err != nil {
+		log.Fatal(err)
+	}
+	view.RegisterExporter(exporter1)
+
+	go func() {
+		// Serve the scrape endpoint on port 9999.
+		http.Handle("/metrics", exporter1)
+		log.Fatal(http.ListenAndServe(":9999", nil))
+	}()
+
+	exporter, err := jaeger.NewExporter(jaeger.Options{
+		AgentEndpoint: "172.31.0.201:6831",
+		Process: jaeger.Process{
+			ServiceName: "saveitem",
+		},
+	})
+	if err != nil {
+		log.Fatal(err)
+	}
+	trace.RegisterExporter(exporter)
+	trace.ApplyConfig(trace.Config{DefaultSampler: trace.AlwaysSample()})
 
 	const QPS = 1000
 	registryReg := etcd.NewRegistry(registry.Addrs(setting.ServerSetting.RegistryAddr))
@@ -85,9 +117,14 @@ func main() {
 		micro.Registry(registryReg),
 		micro.RegisterTTL(time.Second*30),
 		micro.RegisterInterval(time.Second*20),
+		micro.WrapClient(opencensus.NewClientWrapper()),
+		micro.WrapHandler(opencensus.NewHandlerWrapper()),
+		micro.WrapSubscriber(opencensus.NewSubscriberWrapper()),
 		micro.WrapHandler(limiter.NewHandlerWrapper(QPS)),
+
 		//micro.Address(":19999"),
 	)
+
 
 	newService.Init()
 

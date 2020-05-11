@@ -102,11 +102,13 @@ server
 ## 部署
 1. 启动 `etcd`
 2. 启动 `micro` 可视化服务
-3. 启动 `itemsave` (可多台，支持水平扩展)
-4. 启动 `spider` (目前建议一台，支持水平扩展)
-5. 启动 `spiderhttp` (目前建议一台，支持水平扩展)
-6. 启动 `prometheus` 采集 go 应用程序数据
-7. 启动 `grafana` 展示 prometheus 采集的数据
+3. 启动 `jaeger` 
+4. 启动 `itemsave` (可多台，支持水平扩展)
+5. 启动 `spider` (目前建议一台，支持水平扩展)
+6. 启动 `spiderhttp` (目前建议一台，支持水平扩展)
+7. 启动 `prometheus` 采集 go 应用程序数据
+8. 启动 `grafana` 展示 prometheus 采集的数据
+9. 启动 `jaeger-ui` 
 
 ### etcd
 

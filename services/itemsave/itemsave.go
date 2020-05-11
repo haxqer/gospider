@@ -4,6 +4,7 @@ import (
 	"context"
 	"contrib.go.opencensus.io/exporter/jaeger"
 	"contrib.go.opencensus.io/exporter/prometheus"
+	"fmt"
 	"git.trac.cn/nv/spider/model"
 	"git.trac.cn/nv/spider/pkg/logging"
 	"git.trac.cn/nv/spider/pkg/setting"
@@ -14,6 +15,7 @@ import (
 	"github.com/micro/go-micro/v2/transport/grpc"
 	limiter "github.com/micro/go-plugins/wrapper/ratelimiter/uber/v2"
 	"github.com/micro/go-plugins/wrapper/trace/opencensus/v2"
+	"github.com/prometheus/client_golang/prometheus/promhttp"
 	"go.opencensus.io/stats/view"
 	"go.opencensus.io/trace"
 	"log"
@@ -69,14 +71,6 @@ func init() {
 }
 
 func main() {
-	go func() {
-		//metricsEndPoint := fmt.Sprintf(":%d", setting.ServerSetting.MetricsPort)
-		//metricsEndPoint := ":12002"
-		//http.Handle("/metrics", promhttp.Handler())
-		//log.Printf("[info] start metrics server of prometheus listening %s", metricsEndPoint)
-		//http.ListenAndServe(metricsEndPoint, nil)
-	}()
-
 
 	if err := view.Register(opencensus.DefaultServerViews...); err != nil {
 		log.Fatal(err)
@@ -88,13 +82,16 @@ func main() {
 	view.RegisterExporter(exporter1)
 
 	go func() {
-		// Serve the scrape endpoint on port 9999.
-		http.Handle("/metrics", exporter1)
-		log.Fatal(http.ListenAndServe(":9999", nil))
+		metricsEndPoint := fmt.Sprintf(":%d", setting.ServerSetting.MetricsPort)
+
+		http.Handle("/opencensus/metrics", exporter1)
+		http.Handle("/metrics", promhttp.Handler())
+		log.Printf("[info] start metrics server of prometheus listening %s", metricsEndPoint)
+		http.ListenAndServe(metricsEndPoint, nil)
 	}()
 
 	exporter, err := jaeger.NewExporter(jaeger.Options{
-		AgentEndpoint: "172.31.0.201:6831",
+		AgentEndpoint: setting.ServerSetting.JaegerAgentAddr,
 		Process: jaeger.Process{
 			ServiceName: "saveitem",
 		},

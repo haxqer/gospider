@@ -31,7 +31,9 @@ type Server struct {
 	ReadTimeout  time.Duration
 	WriteTimeout time.Duration
 
-	MetricsPort int
+	MetricsPort         int
+	JaegerAgentAddr     string
+	JaegerCollectorAddr string
 }
 
 var ServerSetting = &Server{}

@@ -73,7 +73,7 @@ func Setup() {
 	)
 
 	exporter, err := jaeger.NewExporter(jaeger.Options{
-		CollectorEndpoint: "http://172.31.0.201:14268/api/traces",
+		CollectorEndpoint: fmt.Sprintf("http://%s/api/traces", setting.ServerSetting.JaegerCollectorAddr),
 		Process: jaeger.Process{
 			ServiceName: "saveitem",
 		},

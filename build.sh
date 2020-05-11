@@ -14,12 +14,19 @@ do
     do
         GOOS=${goos} GOARCH=${goarch} go build -o ./gspider_${goos}-${goarch}
         GOOS=${goos} GOARCH=${goarch} go build -o ./itemsave_${goos}-${goarch} ./services/itemsave
+        GOOS=${goos} GOARCH=${goarch} go build -o ./spiderhttp_${goos}-${goarch} ./services/spiderhttp
     done
 done
 
-zip -r gspider-${strFDate}-${ver}.zip  gspider_linux-amd64  docs conf/app.dist.ini README.md
-zip -r itemsave-${strFDate}-${ver}.zip itemsave_linux-amd64 docs conf/app.dist.ini README.md
+rm -f gspider-${strFDate}-${ver}.zip
+rm -f itemsave-${strFDate}-${ver}.zip
+rm -f spiderhttp-${strFDate}-${ver}.zip
+
+zip -r gspider-${strFDate}-${ver}.zip    gspider_linux-amd64    conf/app.dist.ini README.md
+zip -r itemsave-${strFDate}-${ver}.zip   itemsave_linux-amd64   conf/app.dist.ini README.md
+zip -r spiderhttp-${strFDate}-${ver}.zip spiderhttp_linux-amd64 conf/app.dist.ini README.md
 
 echo '----------------------------------------------'
 unzip -l gspider-${strFDate}-${ver}.zip
 unzip -l itemsave-${strFDate}-${ver}.zip
+unzip -l spiderhttp-${strFDate}-${ver}.zip

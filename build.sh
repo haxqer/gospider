@@ -4,6 +4,8 @@ shDir=$(cd `dirname $0`; pwd)
 strFDate=`date +"%y%m%d"`
 #prjName=$(basename "$PWD")
 
+ver=$(git rev-parse --short HEAD)
+
 # Reference:
 # https://github.com/golang/go/blob/master/src/go/build/syslist.go
 for goos in darwin linux
@@ -15,9 +17,9 @@ do
     done
 done
 
-zip -r gspider-${strFDate}.zip  gspider_linux-amd64  docs conf/app.dist.ini README.md
-zip -r itemsave-${strFDate}.zip itemsave_linux-amd64 docs conf/app.dist.ini README.md
+zip -r gspider-${strFDate}-${ver}.zip  gspider_linux-amd64  docs conf/app.dist.ini README.md
+zip -r itemsave-${strFDate}-${ver}.zip itemsave_linux-amd64 docs conf/app.dist.ini README.md
 
 echo '----------------------------------------------'
-unzip -l gspider-${strFDate}.zip
-unzip -l itemsave-${strFDate}.zip
+unzip -l gspider-${strFDate}-${ver}.zip
+unzip -l itemsave-${strFDate}-${ver}.zip

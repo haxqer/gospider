@@ -192,7 +192,7 @@ itemsave
 - [x] grafana 监控可视化
 - [x] jaeger 微服务链路追踪
 - [x] jaeger-ui 微服务链路追踪可视化
-- [x] prometheus 监控 rpc server latency
+- [x] prometheus 监控 rpc server latency (采集接口为 `/opencensus/metrics`, 暂不启用)
 - [x] hystrix 熔断器 (spider 使用)
 - [x] uber.ratelimiter 限流 (itemsave spiderhttp 使用)
 - [x] 提供手工采集的接口

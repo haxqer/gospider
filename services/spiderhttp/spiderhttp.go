@@ -25,8 +25,7 @@ func init() {
 
 func main() {
 	go func() {
-		//metricsEndPoint := fmt.Sprintf(":%d", setting.ServerSetting.MetricsPort)
-		metricsEndPoint := ":12001"
+		metricsEndPoint := fmt.Sprintf(":%d", setting.ServerSetting.MetricsPort)
 		http.Handle("/metrics", promhttp.Handler())
 		log.Printf("[info] start metrics server of prometheus listening %s", metricsEndPoint)
 		http.ListenAndServe(metricsEndPoint, nil)

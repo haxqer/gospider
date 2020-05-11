@@ -72,6 +72,8 @@ server
 + MetricsPort: expose Prometheus metrics (如果部署在同一台机器，注意端口不要和其他服务相同)
 + JaegerAgentAddr: Jaeger agent 地址 (如果有防火墙，请注意此端口需要 UDP)
 
+生成配置文件: `cp ./conf/app.itemsave.ini ./conf/app.ini`
+
 #### spider
 spider 无需配置数据库
 
@@ -81,15 +83,20 @@ server
 + MetricsPort: expose Prometheus metrics (如果部署在同一台机器，注意端口不要和其他服务相同)
 + JaegerCollectorAddr: Jaeger collector 地址
 
+生成配置文件: `cp ./conf/app.gspider.ini ./conf/app.ini`
+
 #### spiderhttp
 spiderhttp 无需配置数据库
 
 server
++ RateLimit: 限制访问mgtv的速度
 + RegistryAddr: 注册中心地址
 + RunMode: 正式环境改为 `release`
 + HttpPort: http 服务的端口
 + MetricsPort: expose Prometheus metrics (如果部署在同一台机器，注意端口不要和其他服务相同)
 + JaegerCollectorAddr: Jaeger collector 地址
+
+生成配置文件: `cp ./conf/app.spiderhttp.ini ./conf/app.ini`
 
 ---
 ## 部署

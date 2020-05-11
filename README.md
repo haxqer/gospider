@@ -163,6 +163,10 @@ scrape_configs:
 
 ![grafana](docs/images/grafana-prometheus.png)
 
+
+### jaeger
+![jaeger](docs/images/jaeger-ui.png)
+
 ---
 ## 数据流向(用途描述)
 数据流向:

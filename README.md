@@ -248,13 +248,14 @@ itemsave
 - [x] jaeger 微服务链路追踪
 - [x] jaeger-ui 微服务链路追踪可视化
 - [x] prometheus 监控 rpc server latency (采集接口为 `/opencensus/metrics`, 暂不启用)
-- [x] hystrix 熔断器 (spider 使用)
-- [x] uber.ratelimiter 限流 (itemsave spiderhttp 使用)
+- [x] hystrix 熔断器 (spider spiderhttp 使用)
+- [x] uber.ratelimiter 限流 (itemsave 使用)
 - [x] 提供手工采集的接口
 - [x] itemsave 接口 (grpc => api)
 - [ ] apollo/nacos 配置中心
 - [ ] error 日志收集
 - [ ] Testing: Unit Testing, Behavior Testing, Integration Testing
+- [ ] 网关: spring gateway (golang 和 java 可以直接用同一种网关)
 
 
 ### prometheus 监控

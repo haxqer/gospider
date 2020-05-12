@@ -187,7 +187,7 @@ all-in-one:
 按以下顺序启动 `jaeger-collector` `jaeger-query` `jaeger-agent`
 
 启动 jaeger-collector:
-```shell script
+```
 export SPAN_STORAGE_TYPE=elasticsearch
 export ES_SERVER_URLS=http://ES_IP:ES_PORT
 ./jaeger-collector
@@ -198,7 +198,7 @@ export ES_SERVER_URLS=http://ES_IP:ES_PORT
 `{"level":"info","ts":1589256948.4090903,"caller":"server/thrift.go:72","msg":"Starting jaeger-collector TChannel server","port":14267}`
 
 启动 jaeger-query:
-```shell script
+```
 export SPAN_STORAGE_TYPE=elasticsearch
 export ES_SERVER_URLS=http://ES_IP:ES_PORT
 ./jaeger-query
@@ -208,7 +208,7 @@ export ES_SERVER_URLS=http://ES_IP:ES_PORT
 + COLLECTOR_IP: jaeger-collector 的 ip
 + TCHANNEL_PORT: jaeger-collector 的 TChannel server 端口
 
-```shell script
+```
 ./jaeger-agent --reporter.tchannel.host-port=COLLECTOR_IP:TCHANNEL_PORT
 ```
 

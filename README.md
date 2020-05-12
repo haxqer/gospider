@@ -174,6 +174,46 @@ scrape_configs:
 
 
 ### jaeger
+
+#### jaeger on elasticsearch
+部署方式 1（推荐）:
+
+all-in-one: 
+
+`./jaeger-all-in-one --es.server-urls=http://ES_IP:ES_PORT`
+
+
+部署方式 2:
+
+按以下顺序启动 `./jaeger-collector`、`./jaeger-query`、`./jaeger-agent`
+
+启动 jaeger-collector:
+```shell script
+export SPAN_STORAGE_TYPE=elasticsearch
+export ES_SERVER_URLS=http://ES_IP:ES_PORT
+./jaeger-collector
+```
+
+如下，表示 TChannel server 启动在 `14267` 端口:
+
+`{"level":"info","ts":1589256948.4090903,"caller":"server/thrift.go:72","msg":"Starting jaeger-collector TChannel server","port":14267}`
+
+启动 jaeger-query:
+```shell script
+export SPAN_STORAGE_TYPE=elasticsearch
+export ES_SERVER_URLS=http://ES_IP:ES_PORT
+./jaeger-query
+```
+
+启动 jaeger-agent:
+
++ COLLECTOR_IP: jaeger-collector 的 ip
++ TCHANNEL_PORT: jaeger-collector 的 TChannel server 端口
+
+```shell script
+./jaeger-agent --reporter.tchannel.host-port=COLLECTOR_IP:TCHANNEL_PORT
+```
+
 ![jaeger](docs/images/jaeger-ui.png)
 
 ---

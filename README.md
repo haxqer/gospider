@@ -20,11 +20,11 @@
 + prometheus: 应用程序状态监控(https://github.com/prometheus/prometheus/releases 建议 v2.18.x)
 + grafana: 可视化 (https://github.com/grafana/grafana/releases 建议 v6.7.x)
 + jaeger: 链路追踪 (https://github.com/jaegertracing/jaeger/releases  建议使用 v1.17.x jaeger-all-in-one)
-+ jaeger-ui: 链路追踪可视化，如果用 jaeger-all-in-one 则无需单独启动 (https://github.com/jaegertracing/jaeger-ui)
++ jaeger-ui: 链路追踪可视化(无需单独启动)，jaeger-all-in-one 和 jaeger-query 中都已集成进去
 
 其他说明:
 + 数据库 schema 在 `docs/sql` 中
-+ grafana 配置在 `docs/grafana/bas-spider-metrics.json`
++ grafana 配置在 `docs/grafana/xx.json`
 + 默认情况下，日志文件在 `runtime` 下 
 + swagger UI 仅开发模式需要，`server.RunMode` 改为 `debug` 即可开启。 开启后访问 `http://YOURIP:PORT/swagger/index.html`
 
@@ -184,7 +184,7 @@ all-in-one:
 
 部署方式 2:
 
-按以下顺序启动 `./jaeger-collector`,`./jaeger-query`,`./jaeger-agent`
+按以下顺序启动 `jaeger-collector` `jaeger-query` `jaeger-agent`
 
 启动 jaeger-collector:
 ```shell script
@@ -205,7 +205,6 @@ export ES_SERVER_URLS=http://ES_IP:ES_PORT
 ```
 
 启动 jaeger-agent:
-
 + COLLECTOR_IP: jaeger-collector 的 ip
 + TCHANNEL_PORT: jaeger-collector 的 TChannel server 端口
 
@@ -216,6 +215,7 @@ export ES_SERVER_URLS=http://ES_IP:ES_PORT
 jaeger-elasticsearch:
 ![jaeger-elasticsearch](docs/images/jaeger-elasticsearch.png)
 
+jaeger-ui:
 ![jaeger](docs/images/jaeger-ui.png)
 
 ---
@@ -252,11 +252,13 @@ itemsave
 - [x] uber.ratelimiter 限流 (itemsave 使用)
 - [x] 提供手工采集的接口
 - [x] itemsave 接口 (grpc => api)
+- [ ] 日志组件替换为 zap
 - [ ] apollo/nacos 配置中心
 - [ ] error 日志收集
 - [ ] Testing: Unit Testing, Behavior Testing, Integration Testing
 - [ ] 网关: spring gateway (golang 和 java 可以直接用同一种网关)
-
+- [ ] 限流器配置加入 配置文件/配置中心 中(现在默认 1000 QPS)
+- [ ] 熔断器配置加入 配置文件/配置中心 中(现在默认 200 并发, 2 秒超时)
 
 ### prometheus 监控
 - [ ] channel 数据长度

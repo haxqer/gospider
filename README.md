@@ -108,7 +108,6 @@ server
 6. 启动 `spiderhttp` (目前建议一台，支持水平扩展)
 7. 启动 `prometheus` 采集 go 应用程序数据
 8. 启动 `grafana` 展示 prometheus 采集的数据
-9. 启动 `jaeger-ui` 
 
 ### etcd
 
@@ -185,7 +184,7 @@ all-in-one:
 
 部署方式 2:
 
-按以下顺序启动 `./jaeger-collector`、`./jaeger-query`、`./jaeger-agent`
+按以下顺序启动 `./jaeger-collector`,`./jaeger-query`,`./jaeger-agent`
 
 启动 jaeger-collector:
 ```shell script
@@ -213,6 +212,9 @@ export ES_SERVER_URLS=http://ES_IP:ES_PORT
 ```shell script
 ./jaeger-agent --reporter.tchannel.host-port=COLLECTOR_IP:TCHANNEL_PORT
 ```
+
+jaeger-elasticsearch:
+![jaeger-elasticsearch](docs/images/jaeger-elasticsearch.png)
 
 ![jaeger](docs/images/jaeger-ui.png)
 

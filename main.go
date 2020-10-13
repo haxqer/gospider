@@ -52,6 +52,9 @@ func main() {
 			genChannelRequest("3"),
 			genChannelRequest("10"),
 			genChannelRequest("50"),
+			genUrlRequest("1", "http://list.mgtv.com/1/a1-a1--------c1-1---.html?channelId=1"),
+			genUrlRequest("2", "http://list.mgtv.com/2/a1-a1-all-------c1-1--a1-.html?channelId=2"),
+			genUrlRequest("3", "http://list.mgtv.com/3/a1--all------a1-c1-1--a1-.html?channelId=3"),
 		)
 	}
 }
@@ -59,6 +62,15 @@ func main() {
 func genChannelRequest(channelId string) engine.Request {
 	return engine.Request{
 		Url:        "http://list.mgtv.com/-------------.html?channelId=" + channelId,
+		ParserFunc: func(c []byte) engine.ParseResult {
+			return parser.ParseChannel(c, channelId)
+		},
+	}
+}
+
+func genUrlRequest(channelId string, url string) engine.Request {
+	return engine.Request{
+		Url:        url,
 		ParserFunc: func(c []byte) engine.ParseResult {
 			return parser.ParseChannel(c, channelId)
 		},

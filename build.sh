@@ -22,9 +22,9 @@ rm -f gspider-${strFDate}-${ver}.zip
 rm -f itemsave-${strFDate}-${ver}.zip
 rm -f spiderhttp-${strFDate}-${ver}.zip
 
-zip -r gspider-${strFDate}-${ver}.zip    gspider_linux-amd64    conf/app.dist.ini README.md
-zip -r itemsave-${strFDate}-${ver}.zip   itemsave_linux-amd64   conf/app.dist.ini README.md
-zip -r spiderhttp-${strFDate}-${ver}.zip spiderhttp_linux-amd64 conf/app.dist.ini README.md
+zip -r gspider-${strFDate}-${ver}.zip    gspider_linux-amd64    conf/app.gspider.ini
+zip -r itemsave-${strFDate}-${ver}.zip   itemsave_linux-amd64   conf/app.itemsave.ini
+zip -r spiderhttp-${strFDate}-${ver}.zip spiderhttp_linux-amd64 conf/app.spiderhttp.ini
 
 echo '----------------------------------------------'
 unzip -l gspider-${strFDate}-${ver}.zip

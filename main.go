@@ -4,6 +4,7 @@ import (
 	"fmt"
 	"git.trac.cn/nv/spider/engine"
 	"git.trac.cn/nv/spider/fetcher"
+	"git.trac.cn/nv/spider/mgtv"
 	"git.trac.cn/nv/spider/mgtv/parser"
 	"git.trac.cn/nv/spider/persist"
 	"git.trac.cn/nv/spider/pkg/logging"
@@ -45,23 +46,21 @@ func main() {
 			Url:        "http://list.mgtv.com/-------------.html?channelId=1",
 			ParserFunc: parser.ParseChannelList,
 		})
-	}else{
+	} else {
 		e.Run(
 			genChannelRequest("1"),
 			genChannelRequest("2"),
 			genChannelRequest("3"),
 			genChannelRequest("10"),
 			genChannelRequest("50"),
-			genUrlRequest("1", "http://list.mgtv.com/1/a1-a1--------c1-1---.html?channelId=1"),
-			genUrlRequest("2", "http://list.mgtv.com/2/a1-a1-all-------c1-1--a1-.html?channelId=2"),
-			genUrlRequest("3", "http://list.mgtv.com/3/a1--all------a1-c1-1--a1-.html?channelId=3"),
 		)
 	}
 }
 
 func genChannelRequest(channelId string) engine.Request {
 	return engine.Request{
-		Url:        "http://list.mgtv.com/-------------.html?channelId=" + channelId,
+		Url: "https://pianku.api.mgtv.com/rider/list/pcweb/v3?platform=pcweb&channelId=" + channelId +
+			"&pn=1&pc=80&hudong=1&_support=10000000&kind=a1&area=a1&sort=c2&callback=" + mgtv.GenJsonp(),
 		ParserFunc: func(c []byte) engine.ParseResult {
 			return parser.ParseChannel(c, channelId)
 		},
@@ -70,7 +69,7 @@ func genChannelRequest(channelId string) engine.Request {
 
 func genUrlRequest(channelId string, url string) engine.Request {
 	return engine.Request{
-		Url:        url,
+		Url: url,
 		ParserFunc: func(c []byte) engine.ParseResult {
 			return parser.ParseChannel(c, channelId)
 		},

@@ -11,7 +11,7 @@ func TestParseChannelList(t *testing.T) {
 		contents []byte
 	}
 
-	testCase01Contents, err := ioutil.ReadFile("channel_test_data.html")
+	testCase01Contents, err := ioutil.ReadFile("channel_test_data.txt")
 	if err != nil {
 		panic(err)
 	}

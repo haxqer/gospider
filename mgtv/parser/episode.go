@@ -126,6 +126,9 @@ func ParseEpisode(contents []byte, url string, channelID string) engine.ParseRes
 		//	logging.Error(fmt.Sprintf("PlayCounter %s parse error: %+v", m.PlayCounter, err))
 		//	continue
 		//}
+		if int64PlayCounter == 0 && intDuration >= 600 {
+			int64PlayCounter = 100000
+		}
 
 		item := model.Mgtv{
 			ChannelId:   int32(intChannelID),
